@@ -19,6 +19,13 @@ class PostSeason extends Model
     {
         return $this->hasMany(PostEpisode::class)->where('status','publish');
     }
+    public function airedEpisodes()
+    {
+        return $this->hasMany(PostEpisode::class)
+            ->where('status', 'publish')
+            ->aired()
+            ->orderByRaw('episode_number + 0 asc');
+    }
     public function post()
     {
         return $this->belongsTo(Post::class);

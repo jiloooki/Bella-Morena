@@ -1,37 +1,57 @@
-<div>
+<div class="bella-comments-shell">
     @if($model->comment != 'active' AND config('settings.comment') != 'active')
-        <div class="flex items-center text-sm gap-x-2 mb-4">
-            <div class="relative flex gap-x-3">
-                <button
-                    class="text-gray-400 hover:text-gray-200 hover:underline cursor-pointer {{ $orderable === 'id' ? '!text-gray-100' : '' }}"
-                    wire:click="orderablex('id')">{{__('Newest')}}</button>
-                <button
-                    class="text-gray-400 hover:text-gray-200 hover:underline cursor-pointer {{ $orderable === 'likes_count' ? '!text-gray-100' : '' }}"
-                    wire:click="orderablex('likes_count')">{{__('Most liked')}}</button>
+        <div class="bella-comments-panel">
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div>
+                    <h3 class="bella-section-heading !mb-1">{{ __('Comments') }}</h3>
+                    <p class="text-sm text-gray-400">{{ __('Join the conversation around this title.') }}</p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3">
+                    <button
+                        class="bella-filter-button {{ $orderable === 'id' ? '!bg-[#E50914] !text-white !border-[#E50914]' : '' }}"
+                        wire:click="orderablex('id')"
+                    >
+                        {{ __('Newest') }}
+                    </button>
+                    <button
+                        class="bella-filter-button {{ $orderable === 'likes_count' ? '!bg-[#E50914] !text-white !border-[#E50914]' : '' }}"
+                        wire:click="orderablex('likes_count')"
+                    >
+                        {{ __('Most liked') }}
+                    </button>
+                    <span class="bella-meta-pill">{{ __(':total comments', ['total' => $comments->count()]) }}</span>
+                </div>
             </div>
-            <div
-                class="py-2 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-200 before:mx-5 dark:text-gray-500 dark:before:border-gray-900 dark:after:border-gray-600 flex-1"></div>
-            <div class="text-gray-500">{{__(':total comments',['total' => $comments->count()])}}</div>
+
+            @auth
+                @include('livewire.partials.comment-form',[
+                    'method'=>'postComment',
+                    'state'=>'newCommentState',
+                    'inputId'=> 'comment',
+                    'inputLabel'=> 'Your comment',
+                    'button'=>'Submit comment'
+                ])
+            @else
+                <x-form.secondary href="{{route('login')}}"
+                                  class="!rounded-full !px-6 !py-3 !text-sm !bg-white/10 !border-white/10 !text-white hover:!bg-white/20">
+                    {{ __('Log in to comment') }}
+                </x-form.secondary>
+            @endauth
+
+            @if($comments->count())
+                <div class="mt-6">
+                    @foreach($comments as $comment)
+                        <livewire:comment :comment="$comment" :key="$comment->id"/>
+                    @endforeach
+                </div>
+
+                <div class="bella-pagination">
+                    {{ $comments->links() }}
+                </div>
+            @else
+                <p class="bella-empty-state">{{ __('No comments yet!') }}</p>
+            @endif
         </div>
-        @auth
-            @include('livewire.partials.comment-form',[
-                'method'=>'postComment',
-                'state'=>'newCommentState',
-                'inputId'=> 'comment',
-                'inputLabel'=> 'Your comment',
-                'button'=>'Submit comment'
-            ])
-        @else
-            <x-form.secondary href="{{route('login')}}"
-                              class="!rounded-full !px-6 !py-2.5 mb-6 !text-sm">{{__('Log in to comment !')}}</x-form.secondary>
-        @endauth
-        @if($comments->count())
-            @foreach($comments as $comment)
-                <livewire:comment :comment="$comment" :key="$comment->id"/>
-            @endforeach
-            {{$comments->links()}}
-        @else
-            <p class="text-gray-500">{{__('No comments yet!')}}</p>
-        @endif
     @endif
 </div>

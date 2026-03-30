@@ -16,9 +16,13 @@ class ReportComponent extends Component
     public $type;
     public $description;
     public $reportModal = false;
+    public $buttonClass = '';
+    public $showDesktopLabel = false;
 
-    public function mount($model) {
+    public function mount($model, $buttonClass = '', $showDesktopLabel = false) {
         $this->model = $model;
+        $this->buttonClass = $buttonClass ?? '';
+        $this->showDesktopLabel = filter_var($showDesktopLabel, FILTER_VALIDATE_BOOLEAN);
     }
     public function render()
     {

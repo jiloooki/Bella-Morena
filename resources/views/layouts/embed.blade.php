@@ -11,7 +11,7 @@
     @include('partials.head')
 </head>
 <body
-    class="overflow-hidden dark:bg-gray-950">
+    class="bella-embed-body overflow-hidden">
     @yield('content')
     @stack('javascript')
 </body>

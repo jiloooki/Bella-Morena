@@ -23,11 +23,17 @@ class SeasonComponent extends Component
     }
     public function render()
     {
+        $seasonQuery = PostSeason::with('airedEpisodes')
+            ->where('post_id', $this->model->id)
+            ->orderByRaw('season_number + 0 asc');
+
         if($this->seasonId) {
-            $selectSeason = PostSeason::where('post_id',$this->model->id)->where('id',$this->seasonId)->first();
-            $this->season_number = $selectSeason->season_number;
+            $selectSeason = (clone $seasonQuery)->where('id',$this->seasonId)->first();
         } else {
-            $selectSeason = PostSeason::where('post_id',$this->model->id)->first();
+            $selectSeason = (clone $seasonQuery)->first();
+        }
+
+        if ($selectSeason) {
             $this->season_number = $selectSeason->season_number;
         }
 

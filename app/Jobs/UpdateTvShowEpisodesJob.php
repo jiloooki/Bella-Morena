@@ -88,22 +88,30 @@ class UpdateTvShowEpisodesJob implements ShouldQueue
                 $tmdbEpisodes = $seasonData['episodes'] ?? [];
 
                 foreach ($tmdbEpisodes as $tmdbEpisode) {
-                    $exists = PostEpisode::where('post_id', $this->post->id)
+                    $episode = PostEpisode::where('post_id', $this->post->id)
                         ->where('season_number', $seasonNumber)
                         ->where('episode_number', $tmdbEpisode['episode_number'])
-                        ->exists();
+                        ->first();
 
-                    if (!$exists) {
+                    if (!$episode) {
                         $episode = new PostEpisode();
                         $episode->post_id = $this->post->id;
                         $episode->name = $tmdbEpisode['name'];
                         $episode->season_number = $seasonNumber;
                         $episode->episode_number = $tmdbEpisode['episode_number'];
                         $episode->overview = $tmdbEpisode['overview'];
-                        $episode->tmdb_image = $tmdbEpisode['still_path'] ?? null;
-                        $episode->runtime = $tmdbEpisode['runtime'] ?? null;
                         $episode->status = 'publish';
+                    }
+
+                    $episode->tmdb_id = $tmdbEpisode['id'] ?? $episode->tmdb_id;
+                    $episode->air_date = $tmdbEpisode['air_date'] ?? $episode->air_date;
+                    $episode->tmdb_image = $tmdbEpisode['still_path'] ?? $episode->tmdb_image;
+                    $episode->runtime = $tmdbEpisode['runtime'] ?? $episode->runtime;
+
+                    if (!$episode->exists) {
                         $localSeason->episodes()->save($episode);
+                    } else {
+                        $episode->save();
                     }
                 }
             }

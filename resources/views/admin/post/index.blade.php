@@ -1,5 +1,10 @@
 @extends('layouts.admin')
 @section('content')
+    @php
+        $viewSort = in_array($request->input('sorting', $request->input('sort', 'desc')), ['asc', 'desc']) ? $request->input('sorting', $request->input('sort', 'desc')) : 'desc';
+        $nextViewSort = $viewSort === 'desc' ? 'asc' : 'desc';
+        $viewSortQuery = array_merge($request->except('page'), ['sort' => $nextViewSort, 'sorting' => $nextViewSort]);
+    @endphp
 
     <div class="container-fluid">
         <div
@@ -16,10 +21,17 @@
                             </div>
                         </th>
                         <th scope="col" class="px-6 py-3 text-left">
-                            <div
-                                class="text-xs font-medium tracking-wide text-gray-700 dark:text-gray-200">
-                                {{__('Views')}}
-                            </div>
+                            <a
+                                href="{{ route('admin.'.$config['route'].'.index', $viewSortQuery) }}"
+                                class="inline-flex items-center gap-2 text-xs font-medium tracking-wide text-gray-700 transition hover:text-gray-900 dark:text-gray-200 dark:hover:text-white"
+                                title="{{ $viewSort === 'desc' ? __('Currently sorted by most views first') : __('Currently sorted by least views first') }}"
+                            >
+                                <span>{{ __('Views') }}</span>
+                                <span class="inline-flex items-center gap-1 rounded-full border border-gray-200 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-gray-500 dark:border-gray-700 dark:text-gray-300">
+                                    <span>{{ $viewSort === 'desc' ? __('Top') : __('Low') }}</span>
+                                    <span aria-hidden="true">{{ $viewSort === 'desc' ? '↓' : '↑' }}</span>
+                                </span>
+                            </a>
                         </th>
                         <th scope="col"></th>
                     </tr>

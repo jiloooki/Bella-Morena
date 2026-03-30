@@ -158,6 +158,7 @@ class TmdbController extends Controller
         $model->release_date = $postArray['release_date'];
         $model->runtime = $postArray['runtime'];
         $model->vote_average = $postArray['vote_average'];
+        $model->popularity = $postArray['popularity'] ?? 0;
         $model->country_id = $postArray['country_id'];
         $model->trailer = $postArray['trailer'];
         $model->tmdb_image = $postArray['tmdb_image'];
@@ -232,9 +233,11 @@ class TmdbController extends Controller
                             }
                         }
                         $episode->post_id = $model->id;
+                        $episode->tmdb_id = $episodeKey['tmdb_id'] ?? null;
                         $episode->name = $episodeKey['name'];
                         $episode->season_number = $season->season_number;
                         $episode->episode_number = $episodeKey['episode_number'];
+                        $episode->air_date = $episodeKey['air_date'] ?? null;
                         $episode->overview = $episodeKey['overview'];
                         $episode->tmdb_image = $episodeKey['tmdb_image'];
                         $episode->runtime = isset($episodeKey['runtime']) ? $episodeKey['runtime'] : null;

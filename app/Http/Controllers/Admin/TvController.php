@@ -218,6 +218,7 @@ class TvController extends Controller
                             $episode->name = $episodeKey['name'];
                             $episode->episode_number = $episodeKey['episode_number'];
                             $episode->season_number = $episodeKey['season_number'];
+                            $episode->air_date = $episodeKey['air_date'] ?? null;
                             $episode->overview = $episodeKey['overview'];
                             $episode->tmdb_image = $episodeKey['tmdb_image'];
                             $episode->runtime = isset($episodeKey['runtime']) ? $episodeKey['runtime'] : null;
@@ -401,15 +402,22 @@ class TvController extends Controller
                                         $episode->image = $uploaded_image;
                                     }
                                 }
-                                $episode->post_id = $model->id;
-                                $episode->tmdb_id = $episodeKey['tmdb_id'];
-                                $episode->name = $episodeKey['name'];
-                                $episode->episode_number = $episodeKey['episode_number'];
-                                $episode->season_number = $episodeKey['season_number'];
-                                $episode->overview = $episodeKey['overview'];
-                                $episode->tmdb_image = $episodeKey['tmdb_image'];
-                                $episode->runtime = isset($episodeKey['runtime']) ? $episodeKey['runtime'] : null;
-                                $episode->status = 'publish';
+                            }
+
+                            $episode->post_id = $model->id;
+                            $episode->tmdb_id = $episodeKey['tmdb_id'];
+                            $episode->name = $episodeKey['name'];
+                            $episode->episode_number = $episodeKey['episode_number'];
+                            $episode->season_number = $episodeKey['season_number'];
+                            $episode->air_date = $episodeKey['air_date'] ?? null;
+                            $episode->overview = $episodeKey['overview'];
+                            $episode->tmdb_image = $episodeKey['tmdb_image'];
+                            $episode->runtime = isset($episodeKey['runtime']) ? $episodeKey['runtime'] : null;
+                            $episode->status = 'publish';
+
+                            if ($episode->exists) {
+                                $episode->save();
+                            } else {
                                 $season->episodes()->save($episode);
                             }
                         }

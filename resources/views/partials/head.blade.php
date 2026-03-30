@@ -2,6 +2,9 @@
 <link rel="icon" type="image/png" sizes="32x32" href="{{asset('favicon/favicon-32x32.png')}}">
 <link rel="icon" type="image/png" sizes="16x16" href="{{asset('favicon/favicon-16x16.png')}}">
 <link rel="manifest" href="{{asset('site.webmanifest')}}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 @vite(['resources/scss/app.scss', 'resources/js/app.js'])
 
 <style>
@@ -15,7 +18,7 @@
             {{'--color-gray-'.$color.':'.hexToRgb('#'.$value)}};
         @endforeach
     @endif
-           --color-primary-500: @if(config('settings.color')){{hexToRgb(config('settings.color'))}}@else{{hexToRgb('#8b5cf6')}}@endif;
+           --color-primary-500: {{hexToRgb('#E50914')}};
     }
 </style>
 {!! config('settings.custom_code') !!}

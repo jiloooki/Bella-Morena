@@ -40,6 +40,7 @@ trait PostTrait
             'release_date' => isset($post->release_date) ? $post->release_date->format('Y-m-d') : null,
             'runtime' => $post->runtime,
             'vote_average' => $post->vote_average,
+            'popularity' => $post->popularity,
             'country_id' => $post->country_id,
             'quality' => $post->quality,
             'tmdb_image' => $post->tmdb_image,
@@ -131,6 +132,7 @@ trait PostTrait
             'overview' => $post['overview'],
             'release_date' => $type == 'movie' ? $post['release_date'] : $post['first_air_date'],
             'vote_average' => number_format($post['vote_average'], 1),
+            'popularity' => (float) ($post['popularity'] ?? 0),
             'image' => $post['poster_path'] ? 'https://image.tmdb.org/t/p/w300'.$post['poster_path'] : null
         ];
 
@@ -184,6 +186,7 @@ trait PostTrait
                 'country_id' => !empty($country) ? $country->id : null,
                 'trailer' => isset($trailer) ? $trailer : null,
                 'vote_average' => number_format($result['vote_average'], 1),
+                'popularity' => (float) ($result['popularity'] ?? 0),
                 'tags' => $tags,
             ];
             foreach (($result['genres'] ?? []) as $genre) {
@@ -226,6 +229,7 @@ trait PostTrait
                                     'name' => $episode['name'],
                                     'episode_number' => $episode['episode_number'],
                                     'season_number' => $season['season_number'],
+                                    'air_date' => $episode['air_date'] ?? null,
                                     'overview' => $episode['overview'],
                                     'runtime' => $episode['runtime'],
                                     'image' => isset($episode['still_path']) ? 'https://image.tmdb.org/t/p/w300'.$episode['still_path'] : null,
@@ -256,6 +260,7 @@ trait PostTrait
             'tmdb_id' => $result['id'],
             'episode_number' => $result['episode_number'],
             'season_number' => $request->season_number,
+            'air_date' => $result['air_date'] ?? null,
             'overview' => $result['overview'],
             'tmdb_image' => $result['still_path'],
             'image' => 'https://image.tmdb.org/t/p/w500'.$result['still_path'],

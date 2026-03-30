@@ -18,7 +18,8 @@ class Post extends Model
 
     protected $casts = [
         'release_date' => 'date:Y-m-d',
-        'arguments' => 'object'
+        'arguments' => 'object',
+        'popularity' => 'float',
     ];
     public static function boot()
     {

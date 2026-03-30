@@ -11,11 +11,17 @@ class ReactionComponent extends Component
     public $model;
     public $reaction;
     public $isReaction = null;
+    public $wrapperClass = '';
+    public $buttonClass = '';
+    public $hideLikeLabel = false;
 
-    public function mount($model,$isReaction = null)
+    public function mount($model, $isReaction = null, $wrapperClass = '', $buttonClass = '', $hideLikeLabel = false)
     {
         $this->model = $model;
         $this->isReaction = $isReaction;
+        $this->wrapperClass = $wrapperClass ?? '';
+        $this->buttonClass = $buttonClass ?? '';
+        $this->hideLikeLabel = filter_var($hideLikeLabel, FILTER_VALIDATE_BOOLEAN);
     }
 
     public function render()

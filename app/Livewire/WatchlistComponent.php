@@ -14,9 +14,17 @@ class WatchlistComponent extends Component
     use WithRateLimiting;
     public $model;
     public $isWatchlist = false;
+    public $label;
+    public $activeLabel;
+    public $buttonClass = '';
+    public $showTextAlways = false;
 
-    public function mount($model) {
+    public function mount($model, $label = null, $activeLabel = null, $buttonClass = '', $showTextAlways = false) {
         $this->model = $model;
+        $this->label = $label ?? __('My List');
+        $this->activeLabel = $activeLabel ?? $this->label;
+        $this->buttonClass = $buttonClass ?? '';
+        $this->showTextAlways = filter_var($showTextAlways, FILTER_VALIDATE_BOOLEAN);
     }
     public function render()
     {

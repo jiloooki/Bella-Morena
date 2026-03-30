@@ -78,7 +78,7 @@
     @include('partials.head')
 </head>
 <body
-    class="min-h-screen dark:bg-gray-950 flex flex-col relative"
+    class="bella-body min-h-screen flex flex-col relative"
     x-data="{ searchOpen: false,loading:false,'sidebarToggle': false,compactToggle: localStorage.getItem('compactToggle') === 'true', cookiePolicy: localStorage.getItem('cookiePolicy'), promote: localStorage.getItem('promote')}"
     x-init="$watch('cookiePolicy', val => {
   localStorage.setItem('cookiePolicy', val);
@@ -89,10 +89,9 @@
 })">
 @include('partials.navbar',['hamberger' => 'visible','landing' => 'active'])
 
-<div class="flex-1">
+<main class="bella-main flex-1">
     @yield('content')
-
-</div>
+</main>
 <div class="mt-auto">
     @include('partials.footer')
 </div>

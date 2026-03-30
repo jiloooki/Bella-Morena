@@ -21,6 +21,11 @@ class PostEpisode extends Model
         'overview',
         'image',
         'runtime',
+        'air_date',
+    ];
+
+    protected $casts = [
+        'air_date' => 'date:Y-m-d',
     ];
 
     protected static function boot()
@@ -38,6 +43,14 @@ class PostEpisode extends Model
     {
         return $query->where('name', 'like', '%'.$value.'%');
     }
+
+    public function scopeAired(Builder $query): Builder
+    {
+        return $query
+            ->whereNotNull('air_date')
+            ->whereDate('air_date', '<=', today());
+    }
+
     public function getImageUrlAttribute()
     {
         if(config('settings.tmdb_image') == 'active') {

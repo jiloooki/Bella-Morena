@@ -24,9 +24,19 @@ class Episodecalendar extends Component
         $dates = array_reverse($dates);
 
         if($this->day) {
-            $listings = PostEpisode::where('status','publish')->whereDate('created_at',$this->day)->limit($limit ?? 24)->orderby('id', 'desc')->get();
+            $listings = PostEpisode::where('status','publish')
+                ->aired()
+                ->whereDate('air_date',$this->day)
+                ->limit($limit ?? 24)
+                ->orderby('episode_number', 'desc')
+                ->get();
         } else {
-            $listings = PostEpisode::where('status','publish')->whereDate('created_at',now()->format('Y-m-d'))->limit($limit ?? 24)->orderby('id', 'desc')->get();
+            $listings = PostEpisode::where('status','publish')
+                ->aired()
+                ->whereDate('air_date',now()->format('Y-m-d'))
+                ->limit($limit ?? 24)
+                ->orderby('episode_number', 'desc')
+                ->get();
         }
         return view('livewire.episodecalendar',compact('dates','listings'));
     }

@@ -15,7 +15,7 @@ class SitemapController extends Controller
     {
 
         $listings['post']       = Post::where('status','publish')->count();
-        $listings['episode']    = PostEpisode::where('status','publish')->count();
+        $listings['episode']    = PostEpisode::where('status','publish')->aired()->count();
         $listings['genre']      = Genre::count();
         $listings['people']     = People::count();
         $listings['blog']       = Article::where('status','publish')->get();
@@ -46,7 +46,7 @@ class SitemapController extends Controller
     }
     public function episode(Request $request,$page)
     {
-        $listings       = PostEpisode::where('status','publish')->paginate(config('attr.sitemap'), ['*'], 'page', $page);
+        $listings       = PostEpisode::where('status','publish')->aired()->paginate(config('attr.sitemap'), ['*'], 'page', $page);
         return response()->view('sitemap.episode', [
             'listings' => $listings,
         ])->header('Content-Type', 'text/xml');

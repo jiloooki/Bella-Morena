@@ -55,8 +55,10 @@ class PopulateTmdbCommandTest extends TestCase
             $table->string('name')->nullable();
             $table->unsignedInteger('season_number');
             $table->unsignedInteger('episode_number');
+            $table->date('air_date')->nullable();
             $table->text('overview')->nullable();
             $table->string('image')->nullable();
+            $table->string('tmdb_id', 25)->nullable();
             $table->string('tmdb_image')->nullable();
             $table->string('runtime')->nullable();
             $table->enum('status', ['publish', 'draft', 'schedule'])->default('draft');
@@ -201,6 +203,7 @@ class PopulateTmdbCommandTest extends TestCase
                             'id' => 4101,
                             'name' => 'Pilot',
                             'episode_number' => 1,
+                            'air_date' => '2025-01-01',
                             'overview' => 'Episode one.',
                             'runtime' => 45,
                             'still_path' => '/episode-one.jpg',
@@ -209,6 +212,7 @@ class PopulateTmdbCommandTest extends TestCase
                             'id' => 4102,
                             'name' => 'Second Episode',
                             'episode_number' => 2,
+                            'air_date' => '2025-01-08',
                             'overview' => 'Episode two.',
                             'runtime' => 46,
                             'still_path' => '/episode-two.jpg',
@@ -257,5 +261,10 @@ class PopulateTmdbCommandTest extends TestCase
         $show = Post::where('tmdb_id', '4001')->firstOrFail();
         $this->assertSame(1, PostSeason::where('post_id', $show->id)->count());
         $this->assertSame(2, PostEpisode::where('post_id', $show->id)->count());
+        $this->assertDatabaseHas('post_episodes', [
+            'post_id' => $show->id,
+            'episode_number' => 1,
+            'air_date' => '2025-01-01',
+        ]);
     }
 }

@@ -321,6 +321,7 @@ class PopulateTmdb extends Command
         $model->release_date = $postArray['release_date'];
         $model->runtime = $postArray['runtime'];
         $model->vote_average = $postArray['vote_average'];
+        $model->popularity = $postArray['popularity'] ?? 0;
         $model->country_id = $postArray['country_id'];
         $model->trailer = $postArray['trailer'];
         $model->tmdb_image = $postArray['tmdb_image'];
@@ -448,9 +449,11 @@ class PopulateTmdb extends Command
                 }
 
                 $episode->post_id = $model->id;
+                $episode->tmdb_id = $episodeData['tmdb_id'] ?? null;
                 $episode->name = $episodeData['name'];
                 $episode->season_number = $season->season_number;
                 $episode->episode_number = $episodeData['episode_number'];
+                $episode->air_date = $episodeData['air_date'] ?? null;
                 $episode->overview = $episodeData['overview'];
                 $episode->tmdb_image = $episodeData['tmdb_image'] ?? null;
                 $episode->runtime = $episodeData['runtime'] ?? null;

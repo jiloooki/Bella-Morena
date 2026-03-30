@@ -171,6 +171,11 @@ class WatchController extends Controller
 
         $listing = Post::withCount([
             'seasons',
+        ])->with([
+            'seasons' => function ($query) {
+                $query->orderByRaw('season_number + 0 asc');
+            },
+            'seasons.airedEpisodes',
         ])->where('slug', $slug)->where('status', 'publish')->where('type',
             'tv')->firstOrFail() ?? abort(404);
 
@@ -257,7 +262,7 @@ class WatchController extends Controller
             $seasonSchema[$season->id] = [
                 'name' => $season->season_number
             ];
-            foreach ($season->episodes as $episode) {
+            foreach ($season->airedEpisodes as $episode) {
                 $seasonSchema[$season->id]['episodes'][] = [
                     'episodeNumber' => $episode->episode_number,
                     'name' => $episode->name,
@@ -297,8 +302,12 @@ class WatchController extends Controller
     {
         $listing = Post::where('slug', $slug)->where('type', 'tv')->where('status',
             'publish')->firstOrFail() ?? abort(404);
-        $episode = PostEpisode::where('post_id', $listing->id)->where('status', 'publish')->where('season_number',
-            $season)->where('episode_number', $episode)->firstOrFail() ?? abort(404);
+        $episode = PostEpisode::where('post_id', $listing->id)
+            ->where('status', 'publish')
+            ->aired()
+            ->where('season_number', $season)
+            ->where('episode_number', $episode)
+            ->firstOrFail() ?? abort(404);
 
         $genres = $listing->genres->modelKeys();
         $recommends = Post::where('type', 'tv')->whereHas('genres', function ($q) use ($genres) {
@@ -467,6 +476,7 @@ class WatchController extends Controller
             $model->release_date = $postArray['release_date'];
             $model->runtime = $postArray['runtime'];
             $model->vote_average = $postArray['vote_average'];
+            $model->popularity = $postArray['popularity'] ?? 0;
             $model->country_id = $postArray['country_id'];
             $model->trailer = $postArray['trailer'];
             $model->tmdb_image = $postArray['tmdb_image'];
@@ -534,9 +544,11 @@ class WatchController extends Controller
                                 foreach ($episodes as $episodeKey) {
                                     $episode = new PostEpisode();
                                     $episode->post_id = $model->id;
+                                    $episode->tmdb_id = $episodeKey['tmdb_id'] ?? null;
                                     $episode->name = $episodeKey['name'];
                                     $episode->season_number = $season->season_number;
                                     $episode->episode_number = $episodeKey['episode_number'];
+                                    $episode->air_date = $episodeKey['air_date'] ?? null;
                                     $episode->overview = $episodeKey['overview'];
                                     $episode->tmdb_image = $episodeKey['tmdb_image'] ?? null;
                                     $episode->runtime = $episodeKey['runtime'] ?? null;
