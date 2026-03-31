@@ -98,7 +98,7 @@
                                     aria-label="{{ __('Share') }}"
                                 >
                                     <x-ui.icon name="link" class="w-4 h-4 shrink-0" fill="currentColor"/>
-                                    <span class="bella-detail-subaction-label hidden md:inline">{{ __('Share') }}</span>
+                                    <span class="bella-detail-subaction-label bella-movie-secondary-label">{{ __('Share') }}</span>
                                 </button>
 
                                 @if($listing->trailer)

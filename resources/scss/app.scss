@@ -2836,9 +2836,20 @@ body.bella-embed-body ::selection {
     }
 }
 
-/* Movie hero action rail hard overrides (desktop polish pass) */
+/* Movie hero action rail final polish */
 .bella-movie-hero-inner {
     max-width: 48rem;
+}
+
+.bella-movie-hero-inner .bella-detail-action-rail {
+    margin-top: 1.45rem;
+}
+
+.bella-movie-action-rail .bella-movie-secondary-row #like .bella-like-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
 }
 
 @media (min-width: 768px) {
@@ -2869,7 +2880,7 @@ body.bella-embed-body ::selection {
         display: inline-flex;
         align-items: center;
         flex-wrap: nowrap;
-        gap: 15px !important;
+        gap: 12px !important;
     }
 
     .bella-movie-action-rail .bella-movie-primary-actions .bella-button,
@@ -2880,7 +2891,18 @@ body.bella-embed-body ::selection {
         min-height: 48px;
         border-radius: 999px;
         line-height: 1;
+    }
+
+    .bella-movie-action-rail .bella-movie-primary-actions .bella-button,
+    .bella-movie-action-rail .bella-movie-primary-actions .bella-inline-action {
         padding: 10px 20px;
+    }
+
+    .bella-movie-action-rail .bella-movie-secondary-actions .bella-detail-subaction-button,
+    .bella-movie-action-rail .bella-movie-secondary-actions .bella-inline-action {
+        min-width: 48px;
+        padding: 0 0.95rem !important;
+        gap: 0.5rem;
     }
 
     .bella-movie-action-rail .bella-movie-primary-actions .bella-button {
@@ -2900,6 +2922,7 @@ body.bella-embed-body ::selection {
     .bella-movie-action-rail .bella-movie-report-button,
     .bella-movie-action-rail .bella-movie-share-button,
     .bella-movie-action-rail .bella-movie-trailer-button {
+        min-width: 88px;
         justify-content: center;
         gap: 0.5rem;
     }
@@ -2913,30 +2936,82 @@ body.bella-embed-body ::selection {
         justify-content: center;
     }
 
-    .bella-movie-action-rail .bella-movie-secondary-row #like {
+    .bella-movie-action-rail .bella-movie-secondary-row #like .bella-like-icon-wrap {
         position: relative;
+        width: 1rem;
+        height: 1rem;
     }
 
     .bella-movie-action-rail .bella-movie-secondary-row #like .bella-like-count {
         position: absolute;
-        top: -4px;
-        right: -4px;
+        top: -0.38rem;
+        right: -0.42rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         margin: 0;
-        min-width: 1.05rem;
-        width: 1.05rem;
-        height: 1.05rem;
+        min-width: 0.95rem;
+        width: 0.95rem;
+        height: 0.95rem;
         padding: 0;
         border-radius: 999px;
         border: 2px solid #141414;
         background: #16a34a;
         color: #fff;
-        font-size: 0.65rem;
+        font-size: 0.58rem;
         font-weight: 700;
+        line-height: 1;
     }
 }
 
 @media (max-width: 767px) {
-    .bella-movie-action-rail .bella-like-count {
-        display: none;
+    .bella-movie-hero-inner .bella-detail-action-rail {
+        margin-top: 1.2rem;
+    }
+
+    .bella-movie-action-rail {
+        width: 100%;
+        align-items: center;
+        gap: 0.65rem;
+    }
+
+    .bella-movie-action-rail .bella-movie-primary-actions {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: nowrap;
+        gap: 0.5rem;
+    }
+
+    .bella-movie-action-rail .bella-movie-secondary-actions {
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 0.5rem;
+    }
+
+    .bella-movie-action-rail .bella-movie-secondary-row {
+        width: auto;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 0.5rem !important;
+    }
+
+    .bella-movie-action-rail .bella-movie-secondary-actions .bella-detail-subaction-button,
+    .bella-movie-action-rail .bella-movie-secondary-actions .bella-inline-action {
+        width: 2.9rem;
+        height: 2.9rem;
+        min-height: 2.9rem;
+        min-width: 2.9rem;
+        padding: 0 !important;
+        gap: 0 !important;
+        justify-content: center;
+        border-radius: 999px;
+    }
+
+    .bella-movie-action-rail .bella-movie-secondary-actions .bella-movie-secondary-label,
+    .bella-movie-action-rail .bella-movie-secondary-actions .bella-like-count {
+        display: none !important;
     }
 }

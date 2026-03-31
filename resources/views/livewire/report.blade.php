@@ -1,9 +1,9 @@
-<div x-data="{ reportModal: @entangle('reportModal').live }">
+<div x-data="{ reportModal: @entangle('reportModal').live }" class="bella-report-action-wrap">
     @if(auth()->user())
         <button class="bella-inline-action {{ $buttonClass }}" @click.prevent="reportModal = true;">
-            <x-ui.icon name="flag" stroke="currentColor" class="w-5 h-5"/>
+            <x-ui.icon name="flag" stroke="currentColor" class="w-4 h-4"/>
             @if($showDesktopLabel)
-                <span class="bella-detail-subaction-label hidden md:inline">{{ __('Report') }}</span>
+                <span class="bella-detail-subaction-label bella-movie-secondary-label">{{ __('Report') }}</span>
             @endif
         </button>
 
@@ -74,9 +74,9 @@
         </div>
     @else
         <a href="{{ route('login') }}" class="bella-inline-action {{ $buttonClass }}" aria-label="{{ __('Report') }}">
-            <x-ui.icon name="report" fill="currentColor" class="w-5 h-5"/>
+            <x-ui.icon name="report" fill="currentColor" class="w-4 h-4"/>
             @if($showDesktopLabel)
-                <span class="bella-detail-subaction-label hidden md:inline">{{ __('Report') }}</span>
+                <span class="bella-detail-subaction-label bella-movie-secondary-label">{{ __('Report') }}</span>
             @endif
         </a>
     @endif
