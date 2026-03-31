@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
-use Illuminate\Validation\ValidationException;
 
 class ReportComponent extends Component
 {
@@ -32,24 +31,36 @@ class ReportComponent extends Component
 
 
         try {
-            $this->rateLimit(1,300);
+            $this->rateLimit(1, 20);
         } catch (TooManyRequestsException $exception) {
-            throw ValidationException::withMessages([
-                'email' => "Slow down! Please wait another {$exception->secondsUntilAvailable} seconds",
-            ]);
+            $this->resetValidation();
+            $this->resetErrorBag();
+            $this->reset(['type', 'description']);
+            $this->reportModal = false;
+            $this->dispatch('show-toast', [
+                'message' => __('Thanks! We already received your report.'),
+                'type' => 'success',
+            ])->to(NotifyComponent::class);
+
+            return;
         }
 
         $this->validate([
-            'type' => 'required|min:1|max:2',
-            'description' => 'required|min:5|max:500'
+            'type' => 'required|in:' . implode(',', array_keys(config('attr.reports'))),
+            'description' => 'nullable|string|max:500'
         ]);
         $this->model->report()->create([
             'type' => $this->type,
             'description' => $this->description,
         ]);
+        $this->resetValidation();
+        $this->resetErrorBag();
         $this->reset(['type', 'description']);
         $this->reportModal = false;
-        $this->dispatch('show-toast', [ 'message' => __('Submit report')])->to(NotifyComponent::class);
+        $this->dispatch('show-toast', [
+            'message' => __('Report submitted! Thanks for helping us improve.'),
+            'type' => 'success',
+        ])->to(NotifyComponent::class);
 
     }
 }

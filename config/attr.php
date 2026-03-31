@@ -103,9 +103,13 @@ return [
         'CAM',
     ],
     'reports' => [
-        '1' => 'Wrong video',
-        '2' => 'Audio not synced',
-        '3' => 'Subtitle not synced',
+        '1' => 'Video not loading / Broken link',
+        '2' => 'Wrong Video / Episode',
+        '3' => 'Audio out of sync',
+        '4' => 'Subtitles out of sync',
+        '5' => 'Missing Subtitles',
+        '6' => 'Poor Video/Audio Quality',
+        '7' => 'Other (Please describe below)',
     ],
     'gender' => [
         '1' => 'Female',

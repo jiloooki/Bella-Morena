@@ -1,49 +1,60 @@
 <div
-    class="notify fixed bottom-0 right-0 flex items-center w-full max-w-sm justify-center px-6 py-8 pointer-events-none z-50">
+    class="notify pointer-events-none fixed inset-x-0 bottom-4 z-[140] flex justify-center px-4 sm:inset-x-auto sm:right-6 sm:bottom-6 sm:px-0 sm:justify-end">
     <div
-        x-data="{ showToastr:false, countdown: 4000,intervalx:100 }"
-        x-init="
-            @this.on('show-toast', () => {
-                showToastr = true;
-                countdown = 5000;
-                intervalx = 100;
-                const interval = setInterval(() => {
-                    countdown = countdown - intervalx;
-                    if (countdown === 0) {
-                        showToastr = false;
-                        clearInterval(interval);
-                    }
-                }, intervalx);
-            });
-         "
+        x-data="{
+            showToastr: @entangle('showToastr').live,
+            toastKey: @entangle('toastKey').live,
+            hideTimeout: null,
+            queueHide() {
+                clearTimeout(this.hideTimeout);
+                this.showToastr = true;
+                this.hideTimeout = setTimeout(() => {
+                    this.showToastr = false;
+                }, 4000);
+            }
+        }"
+        x-init="$watch('toastKey', value => { if (value) { queueHide(); } })"
         x-show="showToastr"
-        x-description="Notification panel, show/hide based on alert state."
-        x-transition:enter="transform ease-out duration-300 transition"
-        x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+        x-cloak
+        x-transition:enter="transform ease-out duration-250 transition"
+        x-transition:enter-start="translate-y-3 opacity-0 sm:translate-y-0 sm:translate-x-3"
         x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
-        x-transition:leave="transition ease-in duration-100"
-        x-transition:leave-start="opacity-100"
-        x-transition:leave-end="opacity-0"
-        class="flex items-center overflow-hidden relative w-full max-w-sm py-5 px-5 space-x-4 max-w-xs bg-gray-800 text-sm text-white rounded-md shadow-lg dark:bg-gray-700 pointer-events-auto"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 translate-y-2"
+        class="pointer-events-auto flex w-full max-w-sm items-center gap-3 rounded-[8px] border border-white/10 bg-[#1A1A1A] px-4 py-3 text-sm text-white shadow-[0_18px_40px_rgba(0,0,0,0.45)]"
     >
-        <div class="bg-white/30 rounded-full transition-all duration-150 ease-linear absolute top-0 left-0"
-             id="toast-timer"
-             :style="{ height:`3px`,width: `${(100 * countdown) / 5000}%` }">
+        <div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-400">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-4 w-4"
+                aria-hidden="true"
+            >
+                <path d="M20 6 9 17l-5-5"/>
+            </svg>
         </div>
-        @if($message)
-        <div
-            class="text-sm font-normal flex-1">{{ $message['message'] }}</div>
-        @endif
-        <div class="ml-5 flex-shrink-0 flex">
-            <button @click="showToastr = false;"
-                    class="inline-flex text-white/50 hover:text-white focus:outline-none focus:text-gray-500 transition ease-in-out duration-150">
-                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                          clip-rule="evenodd"></path>
-                </svg>
-            </button>
-        </div>
-    </div>
 
+        <div class="min-w-0 flex-1">
+            <p class="text-sm font-medium leading-5 text-white">
+                {{ $message['message'] ?? '' }}
+            </p>
+        </div>
+
+        <button
+            type="button"
+            @click="showToastr = false"
+            class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-white/45 transition hover:bg-white/5 hover:text-white focus:outline-none"
+            aria-label="{{ __('Close notification') }}"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 0 1 1.414 0L10 8.586l4.293-4.293a1 1 0 1 1 1.414 1.414L11.414 10l4.293 4.293a1 1 0 0 1-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 0 1-1.414-1.414L8.586 10 4.293 5.707a1 1 0 0 1 0-1.414Z" clip-rule="evenodd"/>
+            </svg>
+        </button>
+    </div>
 </div>

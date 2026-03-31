@@ -1059,92 +1059,6 @@ body.bella-embed-body ::selection {
         display: none;
     }
 
-    .bella-movie-action-rail {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        flex-wrap: nowrap;
-        gap: 15px;
-        width: auto;
-        max-width: 100%;
-    }
-
-    .bella-movie-action-rail .bella-movie-primary-actions,
-    .bella-movie-action-rail .bella-movie-secondary-actions,
-    .bella-movie-action-rail .bella-movie-secondary-row {
-        display: flex;
-        align-items: center;
-        flex-wrap: nowrap;
-        gap: 15px;
-    }
-
-    .bella-movie-action-rail .bella-movie-primary-actions > *,
-    .bella-movie-action-rail .bella-movie-secondary-actions > *,
-    .bella-movie-action-rail .bella-movie-secondary-row > * {
-        flex: 0 0 auto;
-        min-width: 0;
-    }
-
-    .bella-movie-action-rail .bella-button,
-    .bella-movie-action-rail .bella-inline-action,
-    .bella-movie-action-rail .bella-detail-subaction-button {
-        min-height: 48px;
-        height: 48px;
-        border-radius: 999px;
-        line-height: 1;
-    }
-
-    .bella-movie-action-rail .bella-movie-primary-actions .bella-button,
-    .bella-movie-action-rail .bella-movie-primary-actions .bella-inline-action {
-        padding: 10px 20px;
-    }
-
-    .bella-movie-action-rail .bella-movie-primary-actions .bella-button {
-        background: #ffffff;
-        color: #141414;
-        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.2);
-    }
-
-    .bella-movie-action-rail .bella-movie-primary-actions .bella-inline-action,
-    .bella-movie-action-rail .bella-movie-secondary-actions .bella-detail-subaction-button,
-    .bella-movie-action-rail .bella-movie-secondary-actions .bella-inline-action {
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        color: var(--bella-text);
-    }
-
-    .bella-movie-action-rail .bella-movie-secondary-actions .bella-detail-subaction-button,
-    .bella-movie-action-rail .bella-movie-secondary-actions .bella-inline-action {
-        padding: 10px 20px;
-        gap: 0.55rem;
-    }
-
-    .bella-movie-action-rail .bella-movie-secondary-row #like {
-        min-width: 54px;
-        padding: 10px 14px !important;
-    }
-
-    .bella-movie-action-rail .bella-movie-secondary-row #like .bella-like-count {
-        display: inline-flex;
-        margin-left: 0.1rem;
-    }
-
-    .bella-movie-action-rail .bella-movie-report-button,
-    .bella-movie-action-rail .bella-movie-share-button,
-    .bella-movie-action-rail .bella-movie-trailer-button {
-        justify-content: center;
-    }
-
-    .bella-movie-action-rail .bella-movie-trailer-button svg,
-    .bella-movie-action-rail .bella-movie-share-button svg,
-    .bella-movie-action-rail .bella-movie-report-button svg,
-    .bella-movie-action-rail .bella-movie-primary-button svg,
-    .bella-movie-action-rail #like svg,
-    .bella-movie-action-rail #dislike svg {
-        width: 1rem;
-        height: 1rem;
-        flex-shrink: 0;
-    }
 }
 
 .bella-row-section {
@@ -1556,6 +1470,37 @@ body.bella-embed-body ::selection {
 .bella-movie-share-button,
 .bella-movie-trailer-button {
     padding-inline: 1rem !important;
+}
+
+.bella-movie-report-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.16) !important;
+    color: rgba(255, 255, 255, 0.98) !important;
+    font-weight: 600;
+    transition:
+        background-color 180ms ease,
+        border-color 180ms ease,
+        color 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.bella-movie-report-button svg {
+    display: block;
+    opacity: 1;
+    fill: none;
+    stroke: currentColor;
+}
+
+.bella-movie-report-button:hover,
+.bella-movie-report-button:focus-visible {
+    background: rgba(239, 68, 68, 0.2) !important;
+    border-color: rgba(248, 113, 113, 0.3) !important;
+    color: #fff !important;
+    box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.12), 0 0 18px rgba(239, 68, 68, 0.16);
 }
 
 .bella-movie-trailer-button {
@@ -1998,6 +1943,17 @@ body.bella-embed-body ::selection {
     backdrop-filter: blur(20px);
 }
 
+.bella-report-modal-backdrop {
+    z-index: 120;
+}
+
+.bella-report-modal-shell {
+    z-index: 121;
+    overflow-y: auto;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
 .bella-search-panel {
     max-width: 68rem;
     overflow: hidden;
@@ -2171,6 +2127,20 @@ body.bella-embed-body ::selection {
     background: rgba(229, 9, 20, 0.18) !important;
     border-color: rgba(229, 9, 20, 0.35) !important;
     color: #fff !important;
+}
+
+.bella-report-modal-shell .bella-filter-options > div {
+    flex: 0 1 auto;
+    max-width: 100%;
+}
+
+.bella-report-modal-shell .bella-filter-options .bella-filter-label {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-align: center;
+    justify-content: center;
+    line-height: 1.35;
 }
 
 .bella-grid {
@@ -2852,9 +2822,16 @@ body.bella-embed-body ::selection {
     line-height: 1;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
     .bella-movie-hero-inner {
-        max-width: 62rem;
+        max-width: 70rem;
+    }
+
+    .bella-movie-hero-inner .bella-detail-action-rail {
+        width: max-content;
+        max-width: none;
+        overflow: visible;
+        flex-wrap: nowrap;
     }
 
     .bella-movie-action-rail {
@@ -2862,8 +2839,10 @@ body.bella-embed-body ::selection {
         align-items: center;
         flex-wrap: nowrap;
         gap: 15px;
-        width: auto;
+        width: max-content;
         max-width: none;
+        overflow: visible;
+        flex-shrink: 0;
     }
 
     .bella-movie-action-rail > .bella-movie-primary-actions,
@@ -2872,15 +2851,40 @@ body.bella-embed-body ::selection {
         align-items: center;
         flex-wrap: nowrap;
         gap: 15px;
+        width: max-content;
+        max-width: none;
+        overflow: visible;
         flex: 0 0 auto;
-        min-width: 0;
+        flex-shrink: 0;
+        min-width: max-content;
+    }
+
+    .bella-movie-action-rail .bella-report-action-wrap {
+        display: inline-flex;
+        align-items: center;
+        flex: 0 0 auto;
+        flex-shrink: 0;
+        min-width: max-content;
     }
 
     .bella-movie-action-rail .bella-movie-secondary-row {
         display: inline-flex;
         align-items: center;
         flex-wrap: nowrap;
-        gap: 12px !important;
+        gap: 15px !important;
+        width: max-content;
+        overflow: visible;
+        flex: 0 0 auto;
+        flex-shrink: 0;
+        min-width: max-content;
+    }
+
+    .bella-movie-action-rail .bella-movie-primary-actions > *,
+    .bella-movie-action-rail .bella-movie-secondary-actions > *,
+    .bella-movie-action-rail .bella-movie-secondary-row > * {
+        flex: 0 0 auto;
+        flex-shrink: 0;
+        min-width: max-content;
     }
 
     .bella-movie-action-rail .bella-movie-primary-actions .bella-button,
@@ -2891,18 +2895,22 @@ body.bella-embed-body ::selection {
         min-height: 48px;
         border-radius: 999px;
         line-height: 1;
+        flex: 0 0 auto;
+        flex-shrink: 0;
     }
 
     .bella-movie-action-rail .bella-movie-primary-actions .bella-button,
     .bella-movie-action-rail .bella-movie-primary-actions .bella-inline-action {
+        min-width: max-content;
         padding: 10px 20px;
     }
 
     .bella-movie-action-rail .bella-movie-secondary-actions .bella-detail-subaction-button,
     .bella-movie-action-rail .bella-movie-secondary-actions .bella-inline-action {
         min-width: 48px;
-        padding: 0 0.95rem !important;
+        padding: 0 1rem !important;
         gap: 0.5rem;
+        white-space: nowrap;
     }
 
     .bella-movie-action-rail .bella-movie-primary-actions .bella-button {
@@ -2922,9 +2930,32 @@ body.bella-embed-body ::selection {
     .bella-movie-action-rail .bella-movie-report-button,
     .bella-movie-action-rail .bella-movie-share-button,
     .bella-movie-action-rail .bella-movie-trailer-button {
-        min-width: 88px;
+        display: inline-flex;
+        align-items: center;
+        min-width: 90px;
+        width: auto !important;
+        height: 48px;
         justify-content: center;
         gap: 0.5rem;
+        padding: 0 1rem !important;
+        font-size: 0.84rem;
+        line-height: 1;
+    }
+
+    .bella-movie-action-rail .bella-movie-report-button svg,
+    .bella-movie-action-rail .bella-movie-share-button svg,
+    .bella-movie-action-rail .bella-movie-trailer-button svg {
+        width: 1rem;
+        height: 1rem;
+        flex-shrink: 0;
+    }
+
+    .bella-movie-action-rail .bella-movie-report-button .bella-movie-secondary-label,
+    .bella-movie-action-rail .bella-movie-share-button .bella-movie-secondary-label,
+    .bella-movie-action-rail .bella-movie-trailer-button .bella-detail-subaction-label {
+        display: inline-flex;
+        align-items: center;
+        line-height: 1;
     }
 
     .bella-movie-action-rail .bella-movie-secondary-row #like,
@@ -2934,18 +2965,21 @@ body.bella-embed-body ::selection {
         padding: 0 !important;
         gap: 0 !important;
         justify-content: center;
+        flex: 0 0 auto;
+        flex-shrink: 0;
     }
 
     .bella-movie-action-rail .bella-movie-secondary-row #like .bella-like-icon-wrap {
         position: relative;
         width: 1rem;
         height: 1rem;
+        flex-shrink: 0;
     }
 
     .bella-movie-action-rail .bella-movie-secondary-row #like .bella-like-count {
         position: absolute;
-        top: -0.38rem;
-        right: -0.42rem;
+        top: -0.36rem;
+        right: -0.4rem;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -2961,6 +2995,7 @@ body.bella-embed-body ::selection {
         font-size: 0.58rem;
         font-weight: 700;
         line-height: 1;
+        pointer-events: none;
     }
 }
 
