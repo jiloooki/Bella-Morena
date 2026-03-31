@@ -9,7 +9,7 @@
         @unless($hideLikeLabel)
             <span class="hidden sm:inline">{{ __('Like') }}</span>
         @endunless
-        <span class="text-xs opacity-80 min-w-[10px]">{{ (int) $model->likes()->count() }}</span>
+        <span class="bella-like-count">{{ (int) $model->likes()->count() }}</span>
     </button>
 
     <button

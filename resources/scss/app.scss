@@ -1058,6 +1058,93 @@ body.bella-embed-body ::selection {
     .bella-detail-action-rail .bella-detail-subactions #like .text-xs {
         display: none;
     }
+
+    .bella-movie-action-rail {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 15px;
+        width: auto;
+        max-width: 100%;
+    }
+
+    .bella-movie-action-rail .bella-movie-primary-actions,
+    .bella-movie-action-rail .bella-movie-secondary-actions,
+    .bella-movie-action-rail .bella-movie-secondary-row {
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 15px;
+    }
+
+    .bella-movie-action-rail .bella-movie-primary-actions > *,
+    .bella-movie-action-rail .bella-movie-secondary-actions > *,
+    .bella-movie-action-rail .bella-movie-secondary-row > * {
+        flex: 0 0 auto;
+        min-width: 0;
+    }
+
+    .bella-movie-action-rail .bella-button,
+    .bella-movie-action-rail .bella-inline-action,
+    .bella-movie-action-rail .bella-detail-subaction-button {
+        min-height: 48px;
+        height: 48px;
+        border-radius: 999px;
+        line-height: 1;
+    }
+
+    .bella-movie-action-rail .bella-movie-primary-actions .bella-button,
+    .bella-movie-action-rail .bella-movie-primary-actions .bella-inline-action {
+        padding: 10px 20px;
+    }
+
+    .bella-movie-action-rail .bella-movie-primary-actions .bella-button {
+        background: #ffffff;
+        color: #141414;
+        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.2);
+    }
+
+    .bella-movie-action-rail .bella-movie-primary-actions .bella-inline-action,
+    .bella-movie-action-rail .bella-movie-secondary-actions .bella-detail-subaction-button,
+    .bella-movie-action-rail .bella-movie-secondary-actions .bella-inline-action {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        color: var(--bella-text);
+    }
+
+    .bella-movie-action-rail .bella-movie-secondary-actions .bella-detail-subaction-button,
+    .bella-movie-action-rail .bella-movie-secondary-actions .bella-inline-action {
+        padding: 10px 20px;
+        gap: 0.55rem;
+    }
+
+    .bella-movie-action-rail .bella-movie-secondary-row #like {
+        min-width: 54px;
+        padding: 10px 14px !important;
+    }
+
+    .bella-movie-action-rail .bella-movie-secondary-row #like .bella-like-count {
+        display: inline-flex;
+        margin-left: 0.1rem;
+    }
+
+    .bella-movie-action-rail .bella-movie-report-button,
+    .bella-movie-action-rail .bella-movie-share-button,
+    .bella-movie-action-rail .bella-movie-trailer-button {
+        justify-content: center;
+    }
+
+    .bella-movie-action-rail .bella-movie-trailer-button svg,
+    .bella-movie-action-rail .bella-movie-share-button svg,
+    .bella-movie-action-rail .bella-movie-report-button svg,
+    .bella-movie-action-rail .bella-movie-primary-button svg,
+    .bella-movie-action-rail #like svg,
+    .bella-movie-action-rail #dislike svg {
+        width: 1rem;
+        height: 1rem;
+        flex-shrink: 0;
+    }
 }
 
 .bella-row-section {
@@ -1308,7 +1395,7 @@ body.bella-embed-body ::selection {
 
 @media (min-width: 768px) {
     .bella-movie-detail-content {
-        margin-top: 2rem;
+        margin-top: 2.25rem;
     }
 }
 
@@ -1364,7 +1451,7 @@ body.bella-embed-body ::selection {
 }
 
 .bella-movie-detail-content .bella-section-stack {
-    gap: 2rem;
+    gap: 2.25rem;
 }
 
 .bella-movie-details-panel {
@@ -1374,6 +1461,105 @@ body.bella-embed-body ::selection {
 .bella-movie-details-stack {
     display: grid;
     gap: 1.35rem;
+}
+
+.bella-movie-action-rail {
+    width: 100%;
+    max-width: 100%;
+}
+
+.bella-movie-primary-actions,
+.bella-movie-secondary-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.bella-movie-secondary-row {
+    gap: 0.75rem !important;
+}
+
+.bella-movie-primary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0.8rem 1.15rem !important;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--bella-text);
+    gap: 0.55rem;
+    line-height: 1;
+}
+
+.bella-movie-primary-button:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.bella-movie-primary-actions .bella-button,
+.bella-movie-primary-actions .bella-inline-action {
+    min-height: 3rem;
+    padding: 0.8rem 1.15rem;
+}
+
+.bella-movie-primary-actions .bella-inline-action span:last-child {
+    display: inline-flex !important;
+}
+
+.bella-movie-secondary-actions .bella-detail-subaction-button,
+.bella-movie-secondary-actions .bella-inline-action,
+.bella-movie-secondary-actions .bella-button-secondary {
+    min-height: 3rem;
+    border-radius: 999px;
+}
+
+.bella-movie-secondary-actions #like {
+    min-width: auto;
+    width: auto;
+    padding: 0.75rem 0.95rem !important;
+    gap: 0.45rem !important;
+}
+
+.bella-movie-secondary-actions #like .text-xs {
+    min-width: 0.8rem;
+    line-height: 1;
+}
+
+.bella-movie-action-rail svg,
+.bella-movie-action-rail .bella-button span,
+.bella-movie-action-rail .bella-inline-action span,
+.bella-movie-action-rail .bella-detail-subaction-button span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bella-like-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.15rem;
+    height: 1.15rem;
+    padding-inline: 0.25rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    color: currentColor;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.bella-movie-report-button,
+.bella-movie-share-button,
+.bella-movie-trailer-button {
+    padding-inline: 1rem !important;
+}
+
+.bella-movie-trailer-button {
+    gap: 0.55rem !important;
 }
 
 .bella-coming-soon-panel {
@@ -1728,7 +1914,7 @@ body.bella-embed-body ::selection {
 }
 
 .bella-comments-shell {
-    margin-top: 2.25rem;
+    margin-top: 2.5rem;
 }
 
 .bella-comments-shell + .bella-row {
@@ -2529,6 +2715,55 @@ body.bella-embed-body ::selection {
         display: none;
     }
 
+    .bella-movie-action-rail {
+        width: 100%;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .bella-movie-primary-actions,
+    .bella-movie-secondary-actions,
+    .bella-movie-secondary-row {
+        width: 100%;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .bella-movie-primary-actions {
+        flex-wrap: nowrap;
+    }
+
+    .bella-movie-primary-actions .bella-button,
+    .bella-movie-primary-actions .bella-inline-action {
+        min-width: 0;
+        padding: 0.8rem 1.05rem;
+    }
+
+    .bella-movie-secondary-actions {
+        flex-wrap: nowrap;
+    }
+
+    .bella-movie-secondary-actions .bella-detail-subaction-button,
+    .bella-movie-secondary-actions .bella-inline-action {
+        width: 2.9rem;
+        height: 2.9rem;
+        min-height: 2.9rem;
+        min-width: 2.9rem;
+        padding: 0 !important;
+        gap: 0 !important;
+    }
+
+    .bella-movie-secondary-actions #like {
+        width: 2.9rem;
+        min-width: 2.9rem;
+        padding: 0 !important;
+    }
+
+    .bella-movie-secondary-actions #like .text-xs,
+    .bella-movie-share-button .bella-detail-subaction-label {
+        display: none;
+    }
+
     .bella-detail-toolbar {
         gap: 0.55rem;
     }
@@ -2598,5 +2833,110 @@ body.bella-embed-body ::selection {
 
     .bella-coming-soon-count {
         padding: 0.75rem 0.85rem;
+    }
+}
+
+/* Movie hero action rail hard overrides (desktop polish pass) */
+.bella-movie-hero-inner {
+    max-width: 48rem;
+}
+
+@media (min-width: 768px) {
+    .bella-movie-hero-inner {
+        max-width: 62rem;
+    }
+
+    .bella-movie-action-rail {
+        display: inline-flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 15px;
+        width: auto;
+        max-width: none;
+    }
+
+    .bella-movie-action-rail > .bella-movie-primary-actions,
+    .bella-movie-action-rail > .bella-movie-secondary-actions {
+        display: inline-flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 15px;
+        flex: 0 0 auto;
+        min-width: 0;
+    }
+
+    .bella-movie-action-rail .bella-movie-secondary-row {
+        display: inline-flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 15px !important;
+    }
+
+    .bella-movie-action-rail .bella-movie-primary-actions .bella-button,
+    .bella-movie-action-rail .bella-movie-primary-actions .bella-inline-action,
+    .bella-movie-action-rail .bella-movie-secondary-actions .bella-detail-subaction-button,
+    .bella-movie-action-rail .bella-movie-secondary-actions .bella-inline-action {
+        height: 48px;
+        min-height: 48px;
+        border-radius: 999px;
+        line-height: 1;
+        padding: 10px 20px;
+    }
+
+    .bella-movie-action-rail .bella-movie-primary-actions .bella-button {
+        background: #fff;
+        color: #141414;
+        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.2);
+    }
+
+    .bella-movie-action-rail .bella-movie-primary-actions .bella-inline-action,
+    .bella-movie-action-rail .bella-movie-secondary-actions .bella-detail-subaction-button,
+    .bella-movie-action-rail .bella-movie-secondary-actions .bella-inline-action {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        color: var(--bella-text);
+    }
+
+    .bella-movie-action-rail .bella-movie-report-button,
+    .bella-movie-action-rail .bella-movie-share-button,
+    .bella-movie-action-rail .bella-movie-trailer-button {
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .bella-movie-action-rail .bella-movie-secondary-row #like,
+    .bella-movie-action-rail .bella-movie-secondary-row #dislike {
+        width: 48px;
+        min-width: 48px;
+        padding: 0 !important;
+        gap: 0 !important;
+        justify-content: center;
+    }
+
+    .bella-movie-action-rail .bella-movie-secondary-row #like {
+        position: relative;
+    }
+
+    .bella-movie-action-rail .bella-movie-secondary-row #like .bella-like-count {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        margin: 0;
+        min-width: 1.05rem;
+        width: 1.05rem;
+        height: 1.05rem;
+        padding: 0;
+        border-radius: 999px;
+        border: 2px solid #141414;
+        background: #16a34a;
+        color: #fff;
+        font-size: 0.65rem;
+        font-weight: 700;
+    }
+}
+
+@media (max-width: 767px) {
+    .bella-movie-action-rail .bella-like-count {
+        display: none;
     }
 }
