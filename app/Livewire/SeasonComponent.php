@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\PostEpisode;
 use App\Models\PostSeason;
 use Livewire\Component;
 
@@ -27,17 +28,37 @@ class SeasonComponent extends Component
             ->where('post_id', $this->model->id)
             ->orderByRaw('season_number + 0 asc');
 
+        $seasons = $seasonQuery->get();
+
         if($this->seasonId) {
-            $selectSeason = (clone $seasonQuery)->where('id',$this->seasonId)->first();
+            $selectSeason = $seasons->firstWhere('id', $this->seasonId);
+        } elseif ($this->type === 'tv') {
+            $selectSeason = $seasons->firstWhere('season_number', 1) ?? $seasons->first();
+
+            if ($selectSeason) {
+                $this->seasonId = $selectSeason->id;
+            }
         } else {
-            $selectSeason = (clone $seasonQuery)->first();
+            $selectSeason = $seasons->first();
         }
 
         if ($selectSeason) {
             $this->season_number = $selectSeason->season_number;
         }
 
-        return view('livewire.season-component',compact('selectSeason'));
+        $latestEpisode = null;
+
+        if ($this->type === 'tv') {
+            $latestEpisode = PostEpisode::where('post_id', $this->model->id)
+                ->where('status', 'publish')
+                ->aired()
+                ->orderByDesc('air_date')
+                ->orderByRaw('season_number + 0 desc')
+                ->orderByRaw('episode_number + 0 desc')
+                ->first();
+        }
+
+        return view('livewire.season-component', compact('latestEpisode', 'seasons', 'selectSeason'));
     }
     public function updateSeason($seasonId)
     {

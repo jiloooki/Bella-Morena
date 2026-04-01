@@ -9,7 +9,7 @@
             <img src="{{ $listing->coverurl ?: $listing->imageurl }}" alt="{{ $listing->title }}" class="bella-detail-backdrop">
 
             <div class="bella-detail-shell">
-                <div class="bella-detail-hero-inner">
+                <div class="bella-detail-hero-inner bella-movie-hero-inner">
                     <div class="bella-kicker">{{ __('TV Show') }}</div>
 
                     @if(config('settings.show_titlesub') == 'active' && $listing->title_sub)
@@ -41,29 +41,47 @@
                         {{ $listing->overview }}
                     </p>
 
-                    <div class="bella-detail-actions">
-                        @if($isComingSoon)
-                            <a href="#coming-soon" class="bella-button-secondary">
-                                <span>⏳</span>
-                                <span>{{ __('Coming Soon') }}</span>
-                            </a>
-                        @elseif($listing->seasons_count > 0)
-                            <a href="#episodes" class="bella-button">
-                                <span>▶</span>
-                                <span>{{ __('Browse Episodes') }}</span>
-                            </a>
-                        @endif
+                    <div class="bella-detail-action-rail bella-movie-action-rail">
+                        <div class="bella-detail-actions-primary bella-movie-primary-actions">
+                            @if(!$isComingSoon && $listing->seasons_count > 0)
+                                <a href="#episodes" class="bella-button">
+                                    <span>▶</span>
+                                    <span>{{ __('Browse Episodes') }}</span>
+                                </a>
+                            @endif
 
-                        <livewire:watchlist-component :model="$listing"/>
-                        <livewire:reaction-component :model="$listing"/>
-                        <livewire:report-component :model="$listing"/>
+                            <livewire:watchlist-component
+                                :model="$listing"
+                                showTextAlways="true"
+                                buttonClass="bella-movie-primary-button"
+                            />
+                        </div>
 
-                        @if($listing->trailer)
-                            <button class="bella-button-secondary bella-hide-mobile" @click="trailerOpen = true; iframeSrc = '{{ $listing->trailer }}'">
-                                <span>ⓘ</span>
-                                <span>{{ __('Trailer') }}</span>
-                            </button>
-                        @endif
+                        <div class="bella-detail-subactions bella-movie-secondary-actions">
+                            <livewire:reaction-component
+                                :model="$listing"
+                                hideLikeLabel="true"
+                                wrapperClass="bella-detail-subaction-group bella-movie-secondary-row"
+                                buttonClass="bella-detail-subaction-button bella-movie-icon-button"
+                            />
+
+                            <livewire:report-component
+                                :model="$listing"
+                                buttonClass="bella-detail-subaction-button bella-movie-report-button"
+                                showDesktopLabel="true"
+                            />
+
+                            @if($listing->trailer)
+                                <button
+                                    type="button"
+                                    class="bella-detail-subaction-button bella-movie-trailer-button bella-hide-mobile"
+                                    @click="trailerOpen = true; iframeSrc = '{{ $listing->trailer }}'"
+                                >
+                                    <x-ui.icon name="movie" class="w-4 h-4 shrink-0" stroke="currentColor"/>
+                                    <span class="bella-detail-subaction-label">{{ __('Trailer') }}</span>
+                                </button>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
@@ -84,98 +102,26 @@
                     </div>
                 @endif
 
-                <div class="bella-tv-detail-grid">
-                    <div class="bella-tv-main-column">
-                        <div class="bella-detail-panel bella-tv-info-panel">
-                            <div class="bella-detail-summary">
-                                <div class="bella-detail-summary-top">
-                                    <div class="bella-detail-thumb">
-                                        <img src="{{ $listing->imageurl }}" alt="{{ $listing->title }}" class="w-full h-full object-cover">
-                                    </div>
-
-                                    <div class="bella-detail-summary-main">
-                                        <div class="bella-detail-summary-head">
-                                            <div class="bella-detail-summary-copy">
-                                                <h2 class="bella-detail-summary-title">{{ $listing->title }}</h2>
-                                                <div class="bella-detail-summary-meta">
-                                                    @if($listing->release_date)
-                                                        <span>{{ $listing->release_date->translatedFormat('Y') }}</span>
-                                                    @endif
-                                                    @if($listing->runtime)
-                                                        <span>{{ __(':time min', ['time' => $listing->runtime]) }}</span>
-                                                    @endif
-                                                    <span>{{ __(':count seasons', ['count' => $listing->seasons_count]) }}</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="bella-detail-summary-actions">
-                                                @if($listing->trailer)
-                                                    <button type="button" class="bella-button-secondary bella-detail-secondary-button" @click="trailerOpen = true; iframeSrc = '{{ $listing->trailer }}'">
-                                                        {{ __('Watch trailer') }}
-                                                    </button>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <p class="bella-detail-description bella-detail-copy !max-w-none">{{ $listing->overview }}</p>
-
-                                        <div class="bella-info-grid bella-detail-meta-list">
-                                            @if($listing->country_id)
-                                                <div class="bella-info-row">
-                                                    <div class="bella-info-label">{{ __('Country') }}</div>
-                                                    <div>
-                                                        <a href="{{ route('country',['country'=> $listing->country->slug]) }}" class="hover:underline">{{ $listing->country->name }}</a>
-                                                    </div>
-                                                </div>
-                                            @endif
-
-                                            @if(count($listing->genres) > 0)
-                                                <div class="bella-info-row">
-                                                    <div class="bella-info-label">{{ __('Genre') }}</div>
-                                                    <div>
-                                                        @foreach($listing->genres as $genre)
-                                                            <a href="{{ route('genre',['genre' => $genre->slug]) }}" class="hover:underline not-last-child-after inline-block mr-1 after:content-[','] last:mr-0 last:after:hidden">{{ $genre->title }}</a>
-                                                        @endforeach
-                                                    </div>
-                                                </div>
-                                            @endif
-
-                                            @if($listing->release_date)
-                                                <div class="bella-info-row">
-                                                    <div class="bella-info-label">{{ __('Released') }}</div>
-                                                    <div>{{ $listing->release_date->translatedFormat('d M, Y') }}</div>
-                                                </div>
-                                            @endif
-
-                                            @if(count($listing->peoples) > 0)
-                                                <div class="bella-info-row">
-                                                    <div class="bella-info-label">{{ __('Cast') }}</div>
-                                                    <div>
-                                                        @foreach($listing->peoples as $people)
-                                                            <a href="{{ route('people',['slug'=> $people->slug]) }}" class="hover:underline not-last-child-after inline-block mr-1 after:content-[','] last:mr-0 last:after:hidden">{{ $people->name }}</a>
-                                                        @endforeach
-                                                    </div>
-                                                </div>
-                                            @endif
-                                        </div>
-
-                                        <div class="bella-tag-list">
-                                            @include('watch.partials.tag')
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                @if($listing->seasons_count > 0)
+                    <div class="bella-tv-layout-grid">
+                        <div class="bella-tv-main-column">
+                            <section id="episodes">
+                                <livewire:season-component :model="$listing" type="tv"/>
+                            </section>
                         </div>
 
-                        @include('partials.ads',['id'=> 1])
-                    </div>
+                        <aside class="bella-tv-sidebar-column">
+                            @include('watch.partials.tv-details', ['listing' => $listing])
 
-                    @if($listing->seasons_count > 0)
-                        <aside id="episodes" class="bella-tv-sidebar">
-                            <livewire:season-component :model="$listing" type="tv"/>
+                            <div class="bella-tv-sidebar-ad">
+                                @include('partials.ads',['id'=> 1])
+                            </div>
                         </aside>
-                    @endif
-                </div>
+                    </div>
+                @else
+                    @include('watch.partials.tv-details', ['listing' => $listing])
+                    @include('partials.ads',['id'=> 1])
+                @endif
             </div>
 
             <livewire:comments :model="$listing"/>

@@ -1318,34 +1318,27 @@ body.bella-embed-body ::selection {
     padding-top: 2rem;
 }
 
+.bella-tv-layout-grid {
+    display: grid;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.bella-tv-main-column,
+.bella-tv-sidebar-column {
+    min-width: 0;
+    display: grid;
+    gap: 1.5rem;
+}
+
+.bella-tv-sidebar-ad {
+    min-width: 0;
+}
+
 .bella-detail-grid {
     display: grid;
     grid-template-columns: minmax(0, 1.5fr) minmax(18rem, 0.82fr);
     gap: 2rem;
-}
-
-.bella-tv-detail-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.65fr) minmax(19.5rem, 0.72fr);
-    gap: 2rem;
-    align-items: start;
-}
-
-.bella-tv-main-column {
-    display: grid;
-    gap: 1.5rem;
-    min-width: 0;
-}
-
-.bella-tv-info-panel {
-    min-width: 0;
-}
-
-.bella-tv-sidebar {
-    position: sticky;
-    top: calc(var(--bella-nav-height) + 1.5rem);
-    align-self: start;
-    min-width: 0;
 }
 
 .bella-detail-panel,
@@ -2277,55 +2270,168 @@ body.bella-embed-body ::selection {
 }
 
 .bella-tv-episodes-panel {
+    position: relative;
+    isolation: isolate;
+    min-width: 0;
+    overflow: visible;
+}
+
+.bella-tv-episodes-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.bella-tv-episode-toolbar {
+    position: sticky;
+    top: calc(var(--bella-nav-height) + 0.75rem);
+    z-index: 20;
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 0.9rem;
+    padding: 0.45rem 0 0.75rem;
+    background: linear-gradient(180deg, rgba(24, 24, 24, 0.98) 0%, rgba(24, 24, 24, 0.96) 76%, rgba(24, 24, 24, 0.72) 100%);
+    backdrop-filter: blur(14px);
+}
+
+.bella-tv-latest-button {
+    width: 100%;
+    max-width: 100%;
+    min-height: 2.85rem;
+    padding: 0.7rem 0.95rem;
+    font-size: 0.82rem;
+    gap: 0.45rem;
+}
+
+.bella-tv-latest-button span:last-child {
     min-width: 0;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bella-tv-season-control {
+    position: relative;
+    min-width: 0;
+}
+
+.bella-tv-season-picker {
+    width: 100%;
+    margin-top: 0;
+}
+
+.bella-tv-season-trigger {
+    width: 100%;
+    justify-content: space-between;
+    min-height: 2.85rem;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.82rem;
 }
 
 .bella-tv-season-menu {
+    display: none !important;
+}
+
+.bella-tv-season-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 26;
+    background: rgba(8, 8, 8, 0.26);
+    backdrop-filter: blur(3px);
+}
+
+.bella-tv-season-sheet-shell {
+    position: fixed;
+    inset: 0;
+    z-index: 38;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+}
+
+.bella-tv-season-sheet {
+    width: min(100%, 32rem);
+    max-height: min(78vh, 34rem);
+    overflow: hidden;
+    border-radius: 1.35rem;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    background: rgba(20, 20, 20, 0.98);
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.48);
+    backdrop-filter: blur(20px);
+}
+
+.bella-tv-season-sheet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1rem 0.85rem;
+}
+
+.bella-tv-season-sheet-label {
+    color: var(--bella-text-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.bella-tv-season-sheet-current {
+    color: var(--bella-text);
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-top: 0.2rem;
+}
+
+.bella-tv-season-sheet-close {
+    width: 2.4rem;
+    height: 2.4rem;
+    flex: 0 0 auto;
+    color: var(--bella-text);
+}
+
+.bella-tv-season-sheet-options {
     display: grid;
-    gap: 0.35rem;
-    margin-top: 1rem;
-    max-height: 18rem;
+    gap: 0.625rem;
+    max-height: min(52vh, 22rem);
     overflow-y: auto;
-    padding: 0.35rem;
-    border-radius: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.03);
+    padding: 0 1rem 1rem;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
 }
 
-.bella-tv-season-menu::-webkit-scrollbar,
-.bella-tv-episode-scroll::-webkit-scrollbar {
+.bella-tv-season-sheet-options.is-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.bella-tv-season-sheet-options .bella-profile-link {
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0.75rem 0.5rem;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.bella-tv-season-sheet-options::-webkit-scrollbar {
     width: 8px;
 }
 
-.bella-tv-season-menu::-webkit-scrollbar-track,
-.bella-tv-episode-scroll::-webkit-scrollbar-track {
+.bella-tv-season-sheet-options::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.bella-tv-season-menu::-webkit-scrollbar-thumb,
-.bella-tv-episode-scroll::-webkit-scrollbar-thumb {
+.bella-tv-season-sheet-options::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.14);
     border-radius: 999px;
-}
-
-.bella-tv-season-menu::-webkit-scrollbar-thumb:hover,
-.bella-tv-episode-scroll::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.22);
 }
 
 .bella-tv-episode-scroll {
     display: grid;
     gap: 0.8rem;
-    padding-top: 1.25rem;
-    max-height: 600px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 0.25rem;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+    padding-top: 0.95rem;
 }
 
 .bella-tv-episode-item {
@@ -2375,6 +2481,24 @@ body.bella-embed-body ::selection {
     overflow: hidden;
 }
 
+.bella-tv-details-panel {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    padding: 0;
+}
+
+.bella-tv-details-panel .bella-movie-details-stack {
+    gap: 1.15rem;
+}
+
+.bella-tv-details-panel .bella-tag-list {
+    gap: 0.8rem 0.75rem;
+    margin-top: 1.55rem;
+}
+
 .bella-tv-related-row {
     margin-top: 0;
 }
@@ -2417,17 +2541,49 @@ body.bella-embed-body ::selection {
     justify-content: center;
 }
 
+@media (min-width: 640px) {
+    .bella-tv-episodes-header {
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+
+    .bella-tv-episode-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .bella-tv-latest-button {
+        width: auto;
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .bella-tv-season-control {
+        flex: 0 0 12rem;
+    }
+
+    .bella-tv-season-picker {
+        width: 100%;
+        min-width: 0;
+    }
+}
+
+@media (min-width: 1025px) {
+    .bella-tv-layout-grid {
+        grid-template-columns: minmax(0, 1.58fr) minmax(20rem, 0.82fr);
+        gap: 1.75rem;
+    }
+
+    .bella-tv-details-panel {
+        position: sticky;
+        top: calc(var(--bella-nav-height) + 1rem);
+    }
+}
+
 @media (max-width: 1279px) {
     .bella-detail-grid {
         grid-template-columns: minmax(0, 1fr);
-    }
-
-    .bella-tv-detail-grid {
-        grid-template-columns: minmax(0, 1fr);
-    }
-
-    .bella-tv-sidebar {
-        position: static;
     }
 
     .bella-related-grid {
@@ -2558,6 +2714,83 @@ body.bella-embed-body ::selection {
 
     .bella-mobile-drawer {
         width: min(75vw, 300px);
+    }
+
+    .bella-tv-episodes-header {
+        gap: 0.45rem;
+    }
+
+    .bella-tv-episodes-header p {
+        font-size: 0.82rem;
+    }
+
+    .bella-tv-episode-toolbar {
+        top: calc(var(--bella-nav-height) + 0.45rem);
+        gap: 0.45rem;
+        margin-top: 0.7rem;
+        padding: 0.3rem 0 0.5rem;
+    }
+
+    .bella-tv-latest-button,
+    .bella-tv-season-trigger {
+        min-height: 2.7rem;
+        padding: 0.68rem 0.9rem;
+        font-size: 0.78rem;
+    }
+
+    .bella-tv-season-backdrop {
+        background: rgba(8, 8, 8, 0.42);
+        backdrop-filter: blur(6px);
+    }
+
+    .bella-tv-season-sheet-shell {
+        padding: 1rem;
+    }
+
+    .bella-tv-season-sheet {
+        width: min(100%, 30rem);
+        max-height: min(74vh, 32rem);
+        border-radius: 1.45rem;
+    }
+
+    .bella-tv-season-sheet-header {
+        padding: 0.95rem 0.95rem 0.75rem;
+    }
+
+    .bella-tv-season-sheet-options {
+        max-height: min(58vh, 24rem);
+        padding: 0 0.95rem 0.95rem;
+    }
+
+    .bella-tv-season-sheet-options.is-grid {
+        gap: 0.625rem;
+    }
+
+    .bella-tv-episode-scroll {
+        gap: 0.72rem;
+        padding-top: 0.78rem;
+    }
+
+    .bella-tv-episode-item {
+        grid-template-columns: 5.25rem minmax(0, 1fr);
+        gap: 0.72rem;
+        padding: 0.58rem;
+        border-radius: 0.95rem;
+    }
+
+    .bella-tv-episode-thumb {
+        border-radius: 0.75rem;
+    }
+
+    .bella-tv-episode-number {
+        font-size: 0.68rem;
+        margin-bottom: 0.18rem;
+    }
+
+    .bella-tv-episode-title {
+        font-size: 0.88rem;
+        line-height: 1.3;
+        -webkit-line-clamp: 2;
     }
 
     .bella-hero-inner {
