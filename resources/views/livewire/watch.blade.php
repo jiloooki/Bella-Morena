@@ -57,19 +57,20 @@
                                 allowtransparency></iframe>
                     </div>
 
-                    @if(count($videos) > 1)
-                        <div class="bella-player-toolbar">
-                            <div class="text-sm text-gray-400">{{ __('Choose a stream source') }}</div>
-                            <ul class="flex flex-wrap gap-3">
+                    @if(count($videos) > 0)
+                        <div class="bella-player-toolbar bella-player-server-row">
+                            <div class="bella-player-server-label">{{ __('Servers') }}</div>
+
+                            <ul class="bella-player-server-list">
                                 @foreach($videos as $key => $video)
                                     <li>
                                         <button
-                                            class="bella-filter-button"
-                                            :class="{ '!bg-[#E50914] !text-white !border-[#E50914]': stream === '{{ $loop->index }}' }"
+                                            class="bella-filter-button bella-player-server-pill"
+                                            :class="{ '!bg-white !text-[#141414] !border-white': stream === '{{ $loop->index }}' }"
                                             x-on:click="stream = '{{ $loop->index }}'; document.getElementById('video-iframe').src = '{{ $video['link'] }}';"
                                         >
                                             <x-ui.icon name="link" class="w-4 h-4" fill="currentColor"/>
-                                            <span>{{ $video['label'] ?? __('Stream').' #'.$key+1 }}</span>
+                                            <span>{{ $video['label'] ?? __('Server').' '.$loop->iteration }}</span>
                                         </button>
                                     </li>
                                 @endforeach

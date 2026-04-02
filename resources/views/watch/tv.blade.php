@@ -4,7 +4,7 @@
     @php
         $isComingSoon = $listing->release_date && $listing->release_date->gt(now()->startOfDay());
     @endphp
-    <div x-data="{ trailerOpen: false, iframeSrc: '' }">
+    <div class="bella-page bella-immersive-page bella-detail-page" x-data="{ trailerOpen: false, iframeSrc: '' }">
         <section class="bella-detail-hero" id="details">
             <img src="{{ $listing->coverurl ?: $listing->imageurl }}" alt="{{ $listing->title }}" class="bella-detail-backdrop">
 
@@ -19,19 +19,19 @@
                     <h1 class="bella-detail-title">{{ $listing->title }}</h1>
 
                     <div class="bella-detail-meta">
-                        @if($listing->quality)
-                            <span class="bella-meta-pill is-strong">{{ $listing->quality }}</span>
+                        @if($listing->vote_average)
+                            <span class="bella-meta-pill is-strong">★ {{ number_format((float) $listing->vote_average, 1) }}</span>
                         @endif
                         @if($listing->release_date)
                             <span class="bella-meta-pill">{{ $listing->release_date->translatedFormat('Y') }}</span>
-                        @endif
-                        @if($listing->vote_average)
-                            <span class="bella-meta-pill">★ {{ number_format((float) $listing->vote_average, 1) }}</span>
                         @endif
                         @if($listing->runtime)
                             <span class="bella-meta-pill">{{ __(':time min', ['time' => $listing->runtime]) }}</span>
                         @endif
                         <span class="bella-meta-pill">{{ __(':count seasons', ['count' => $listing->seasons_count]) }}</span>
+                        @if($listing->quality)
+                            <span class="bella-meta-pill {{ !$listing->vote_average ? 'is-strong' : '' }}">{{ $listing->quality }}</span>
+                        @endif
                         @foreach($listing->genres->take(2) as $genre)
                             <span class="bella-meta-pill">{{ $genre->title }}</span>
                         @endforeach

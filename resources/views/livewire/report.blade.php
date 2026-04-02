@@ -57,7 +57,7 @@
                         <div class="flex items-center justify-between gap-4 mb-6">
                             <div>
                                 <h3 class="text-2xl font-semibold text-white">{{ __('Report') }}</h3>
-                                <p class="text-sm text-gray-400 mt-1">{{ $model->title }}</p>
+                                <p class="text-sm text-gray-400 mt-1">{{ $model->title ?? $model->name }}</p>
                             </div>
                             <button type="button" class="bella-icon-button" @click="reportModal = false">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">

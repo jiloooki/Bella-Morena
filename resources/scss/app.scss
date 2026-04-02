@@ -249,19 +249,24 @@ body.bella-embed-body ::selection {
     left: 0;
     z-index: 50;
     background: transparent;
-    transition: background-color 180ms ease, box-shadow 180ms ease, backdrop-filter 180ms ease;
+    border-bottom: 1px solid transparent;
+    transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out, backdrop-filter 0.3s ease-in-out, -webkit-backdrop-filter 0.3s ease-in-out, border-color 0.3s ease-in-out;
 }
 
 .bella-navbar:not(.is-solid) {
     background: transparent;
     backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     box-shadow: none;
+    border-color: transparent;
 }
 
 .bella-navbar.is-solid {
-    background: rgba(20, 20, 20, 0.94);
-    backdrop-filter: blur(24px);
-    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    border-color: rgba(255, 255, 255, 0.05);
 }
 
 .bella-nav-inner {
@@ -1947,8 +1952,17 @@ body.bella-embed-body ::selection {
     padding-bottom: 1.5rem;
 }
 
+.bella-search-modal-shell {
+    padding-top: max(5.5rem, calc(var(--bella-nav-height) + 1rem));
+    padding-bottom: 1.5rem;
+}
+
 .bella-search-panel {
+    --bella-search-panel-max-height: min(70vh, 42rem);
     max-width: 68rem;
+    max-height: var(--bella-search-panel-max-height);
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
 }
 
@@ -1957,7 +1971,13 @@ body.bella-embed-body ::selection {
     align-items: center;
     gap: 1rem;
     padding: 1rem 1.2rem;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 4;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(24, 24, 24, 0.96);
+    backdrop-filter: blur(18px);
 }
 
 .bella-search-input {
@@ -1972,14 +1992,41 @@ body.bella-embed-body ::selection {
     color: rgba(229, 229, 229, 0.36);
 }
 
+.bella-search-results {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: calc(var(--bella-search-panel-max-height) - 5.25rem);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+.bella-search-results::-webkit-scrollbar {
+    width: 8px;
+}
+
+.bella-search-results::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.bella-search-results::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+}
+
 .bella-search-columns {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0;
+    min-width: 0;
+    align-items: start;
 }
 
 .bella-search-group {
-    padding: 1rem 1.2rem 1.2rem;
+    padding: 1.25rem 1.4rem 1.4rem;
+    min-width: 0;
 }
 
 .bella-search-group + .bella-search-group {
@@ -1998,30 +2045,119 @@ body.bella-embed-body ::selection {
     margin-bottom: 0.9rem;
 }
 
-.bella-search-item {
-    display: grid;
-    grid-template-columns: 4.25rem minmax(0, 1fr);
-    gap: 0.95rem;
-    align-items: center;
-    padding: 0.55rem 0;
-    border-radius: 1rem;
+.bella-search-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
 }
 
-.bella-search-item:hover {
-    background: rgba(255, 255, 255, 0.04);
+.bella-search-item {
+    display: grid;
+    grid-template-columns: 3.75rem minmax(0, 1fr);
+    gap: 0.95rem;
+    align-items: start;
+    padding: 0.75rem;
+    border-radius: 1rem;
+    border: 1px solid transparent;
+    transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.bella-search-item:hover,
+.bella-search-item:focus-visible {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
 }
 
 .bella-search-thumb {
-    aspect-ratio: 2 / 3;
+    position: relative;
+    width: 3.75rem;
+    min-width: 3.75rem;
+    height: 5.625rem;
     overflow: hidden;
     border-radius: 0.85rem;
     background: #232323;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.bella-search-thumb-image,
+.bella-search-thumb picture,
+.bella-search-thumb picture img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.bella-search-thumb-fallback {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(229, 9, 20, 0.35), rgba(255, 255, 255, 0.08));
+    color: var(--bella-text);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.bella-search-copy {
+    min-width: 0;
+}
+
+.bella-search-title {
+    color: #fff;
+    font-size: 0.98rem;
+    font-weight: 700;
+    line-height: 1.35;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.bella-search-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-top: 0.25rem;
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.bella-search-meta span {
+    display: inline-flex;
+    align-items: center;
+}
+
+.bella-search-meta span + span::before {
+    content: "|";
+    margin-right: 0.55rem;
+    color: rgba(255, 255, 255, 0.28);
+}
+
+.bella-search-summary {
+    margin-top: 0.45rem;
+    color: var(--bella-text-muted);
+    font-size: 0.82rem;
+    line-height: 1.45;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 .bella-search-empty {
-    padding: 1rem 0;
+    padding: 1rem 0.1rem;
     color: var(--bella-text-muted);
     font-size: 0.95rem;
+    line-height: 1.55;
+}
+
+.bella-search-results-footer {
+    background: rgba(24, 24, 24, 0.92);
 }
 
 .bella-browse-shell {
@@ -2285,8 +2421,8 @@ body.bella-embed-body ::selection {
 }
 
 .bella-tv-episode-toolbar {
-    position: sticky;
-    top: calc(var(--bella-nav-height) + 0.75rem);
+    position: relative;
+    top: auto;
     z-index: 20;
     display: grid;
     gap: 0.6rem;
@@ -2503,6 +2639,10 @@ body.bella-embed-body ::selection {
     margin-top: 0;
 }
 
+.bella-episode-related-row {
+    margin-top: 5.5rem;
+}
+
 .bella-episode-link {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -2640,6 +2780,30 @@ body.bella-embed-body ::selection {
         border-top: 1px solid rgba(255, 255, 255, 0.06);
     }
 
+    .bella-search-modal-shell {
+        align-items: stretch;
+        padding: calc(var(--bella-nav-height) + 0.65rem) 0.85rem max(0.85rem, env(safe-area-inset-bottom));
+    }
+
+    .bella-search-panel {
+        --bella-search-panel-max-height: calc(100vh - var(--bella-nav-height) - 1rem);
+        --bella-search-panel-max-height: calc(100dvh - var(--bella-nav-height) - 1rem);
+        width: 100%;
+        border-radius: 1.15rem;
+    }
+
+    .bella-search-results {
+        max-height: calc(var(--bella-search-panel-max-height) - 4.85rem);
+    }
+
+    .bella-search-group {
+        padding: 1rem 1rem 1.1rem;
+    }
+
+    .bella-search-results-footer {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
     .bella-coming-soon-layout {
         grid-template-columns: minmax(0, 1fr);
     }
@@ -2725,7 +2889,7 @@ body.bella-embed-body ::selection {
     }
 
     .bella-tv-episode-toolbar {
-        top: calc(var(--bella-nav-height) + 0.45rem);
+        top: auto;
         gap: 0.45rem;
         margin-top: 0.7rem;
         padding: 0.3rem 0 0.5rem;
@@ -2791,6 +2955,10 @@ body.bella-embed-body ::selection {
         font-size: 0.88rem;
         line-height: 1.3;
         -webkit-line-clamp: 2;
+    }
+
+    .bella-episode-related-row {
+        margin-top: 3.5rem;
     }
 
     .bella-hero-inner {
@@ -3281,5 +3449,669 @@ body.bella-embed-body ::selection {
     .bella-movie-action-rail .bella-movie-secondary-actions .bella-movie-secondary-label,
     .bella-movie-action-rail .bella-movie-secondary-actions .bella-like-count {
         display: none !important;
+    }
+}
+
+/* Episode player refresh */
+.bella-episode-hero-inner {
+    max-width: 62rem;
+}
+
+.bella-episode-detail-content {
+    margin-top: 1rem;
+}
+
+.bella-episode-action-rail {
+    width: 100%;
+    max-width: 100%;
+}
+
+.bella-episode-action-rail .bella-movie-primary-actions {
+    flex-wrap: wrap;
+}
+
+.bella-episode-watchlist-button {
+    min-height: 3rem;
+}
+
+.bella-episode-nav-button {
+    min-height: 3rem;
+    white-space: nowrap;
+}
+
+.bella-episode-nav-button.is-secondary {
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--bella-text);
+}
+
+.bella-episode-nav-button.is-secondary:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.bella-episode-nav-button.is-disabled {
+    opacity: 0.45;
+    pointer-events: none;
+    box-shadow: none;
+}
+
+.bella-episode-player-shell {
+    width: 100%;
+    max-width: min(100%, 70rem);
+    margin-inline: auto;
+}
+
+.bella-episode-player-shell .bella-player-shell {
+    margin-top: 0;
+}
+
+.bella-episode-player-shell .bella-player-frame {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.bella-player-server-row {
+    align-items: center;
+}
+
+.bella-player-server-label {
+    color: rgba(229, 229, 229, 0.68);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.bella-player-server-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+}
+
+.bella-player-server-pill {
+    min-height: 2.2rem;
+    padding: 0.55rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    gap: 0.4rem;
+}
+
+.bella-episode-layout-grid {
+    display: grid;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.bella-episode-main-column,
+.bella-episode-sidebar-column {
+    min-width: 0;
+    display: grid;
+    gap: 1.5rem;
+}
+
+.bella-episode-sidebar-column {
+    order: 1;
+}
+
+.bella-episode-main-column {
+    order: 2;
+}
+
+.bella-episode-details-panel {
+    display: grid;
+    gap: 1.35rem;
+}
+
+.bella-episode-description-block {
+    display: grid;
+    gap: 0.7rem;
+}
+
+.bella-episode-details-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.bella-episode-download-button {
+    min-height: 2.75rem;
+    padding-inline: 1rem;
+    white-space: nowrap;
+}
+
+.bella-episode-copy {
+    max-width: 60rem;
+}
+
+.bella-episode-read-more {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    min-height: 2.35rem;
+    padding: 0.5rem 0.95rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--bella-text);
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.bella-episode-read-more:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.bella-episode-facts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.bella-episode-fact {
+    display: grid;
+    gap: 0.32rem;
+    padding: 0.9rem 1rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.bella-episode-fact-label {
+    color: var(--bella-text-muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.bella-episode-fact-value {
+    color: var(--bella-text);
+    font-size: 0.94rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.bella-episode-tag-block {
+    display: grid;
+    gap: 0.8rem;
+}
+
+.bella-episode-season-panel {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+}
+
+.bella-episode-season-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.bella-episode-season-switcher {
+    flex: 0 0 auto;
+}
+
+.bella-episode-season-button {
+    min-height: 2.75rem;
+    padding-inline: 1rem;
+}
+
+.bella-episode-season-scroll {
+    display: grid;
+    gap: 0.75rem;
+    max-height: 38rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 0.2rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+}
+
+.bella-episode-season-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+.bella-episode-season-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.bella-episode-season-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+}
+
+@keyframes bella-episode-pulse {
+    0% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(229, 9, 20, 0.42);
+    }
+
+    50% {
+        opacity: 0.55;
+        box-shadow: 0 0 0 0.38rem rgba(229, 9, 20, 0);
+    }
+
+    100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(229, 9, 20, 0);
+    }
+}
+
+.bella-episode-sidebar-item {
+    position: relative;
+    grid-template-columns: 5.35rem minmax(0, 1fr);
+    gap: 0.72rem;
+    align-items: center;
+    padding: 0.58rem;
+    min-width: 0;
+}
+
+.bella-episode-sidebar-copy {
+    min-width: 0;
+    display: grid;
+    gap: 0.2rem;
+    align-content: center;
+}
+
+.bella-episode-sidebar-meta-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.bella-episode-sidebar-item .bella-tv-episode-number {
+    margin-bottom: 0;
+}
+
+.bella-episode-sidebar-date {
+    color: var(--bella-text-muted);
+    font-size: 0.78rem;
+    line-height: 1.35;
+}
+
+.bella-episode-sidebar-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.38rem;
+    min-height: 1.5rem;
+    padding: 0.18rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid rgba(229, 9, 20, 0.22);
+    background: rgba(229, 9, 20, 0.12);
+    color: #fff;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex: 0 0 auto;
+}
+
+.bella-episode-sidebar-badge-dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 999px;
+    background: #ff4d4f;
+    box-shadow: 0 0 0 0 rgba(229, 9, 20, 0.42);
+    animation: bella-episode-pulse 1.8s ease-in-out infinite;
+}
+
+.bella-episode-sidebar-item.is-active {
+    border-color: rgba(229, 9, 20, 0.38);
+    background: linear-gradient(180deg, rgba(229, 9, 20, 0.14), rgba(255, 255, 255, 0.03));
+    box-shadow: inset 0 0 0 1px rgba(229, 9, 20, 0.12), 0 18px 28px rgba(0, 0, 0, 0.16);
+}
+
+.bella-episode-sidebar-item.is-active .bella-tv-episode-number,
+.bella-episode-sidebar-item.is-active .bella-episode-sidebar-date {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.bella-episode-sidebar-item.is-active .bella-tv-episode-thumb {
+    box-shadow: inset 0 0 0 1px rgba(229, 9, 20, 0.24);
+}
+
+@media (min-width: 1025px) {
+    .bella-episode-layout-grid {
+        grid-template-columns: minmax(0, 1.42fr) minmax(20rem, 0.82fr);
+        gap: 1.75rem;
+    }
+
+    .bella-episode-main-column {
+        order: 2;
+    }
+
+    .bella-episode-sidebar-column {
+        order: 1;
+    }
+
+    .bella-episode-sidebar-column .bella-episode-season-panel {
+        position: sticky;
+        top: calc(var(--bella-nav-height) + 1rem);
+    }
+}
+
+@media (max-width: 767px) {
+    .bella-episode-action-rail {
+        gap: 0.7rem;
+    }
+
+    .bella-episode-action-rail .bella-movie-primary-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+        gap: 0.65rem;
+    }
+
+    .bella-episode-action-rail .bella-movie-primary-actions > * {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .bella-episode-watchlist-button {
+        grid-column: 1 / -1;
+    }
+
+    .bella-episode-action-rail .bella-movie-primary-actions .bella-button,
+    .bella-episode-action-rail .bella-movie-primary-actions .bella-inline-action {
+        width: 100%;
+        min-height: 2.9rem;
+        padding: 0.82rem 0.9rem;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .bella-episode-player-shell .bella-player-toolbar {
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.9rem 1rem 1rem;
+    }
+
+    .bella-player-server-list {
+        width: 100%;
+        gap: 0.5rem;
+    }
+
+    .bella-player-server-pill {
+        min-height: 2rem;
+        padding: 0.48rem 0.8rem;
+        font-size: 0.74rem;
+    }
+
+    .bella-episode-details-header,
+    .bella-episode-season-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .bella-episode-facts-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.65rem;
+    }
+
+    .bella-episode-fact {
+        padding: 0.78rem 0.85rem;
+    }
+
+    .bella-episode-season-switcher {
+        width: 100%;
+    }
+
+    .bella-episode-season-button {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .bella-episode-season-scroll {
+        display: grid;
+        gap: 0.75rem;
+        max-height: none;
+        overflow: visible;
+        padding: 0;
+        margin: 0;
+        scroll-snap-type: none;
+    }
+
+    .bella-episode-sidebar-item {
+        grid-template-columns: 4.75rem minmax(0, 1fr);
+        gap: 0.72rem;
+        min-width: 0;
+        padding: 0.58rem;
+        align-items: center;
+        border-radius: 1rem;
+    }
+
+    .bella-episode-sidebar-copy {
+        gap: 0.18rem;
+    }
+
+    .bella-episode-sidebar-meta-row {
+        gap: 0.55rem;
+    }
+
+    .bella-episode-sidebar-item .bella-tv-episode-number {
+        font-size: 0.68rem;
+    }
+
+    .bella-episode-sidebar-item .bella-tv-episode-title {
+        font-size: 0.88rem;
+        line-height: 1.3;
+    }
+
+    .bella-episode-sidebar-date {
+        font-size: 0.74rem;
+    }
+
+    .bella-episode-sidebar-badge {
+        min-height: 1.32rem;
+        gap: 0.32rem;
+        padding: 0.16rem 0.45rem;
+        font-size: 0.52rem;
+    }
+
+    .bella-episode-sidebar-badge-dot {
+        width: 0.4rem;
+        height: 0.4rem;
+    }
+
+    .bella-episode-sidebar-item.is-active {
+        background: linear-gradient(180deg, rgba(229, 9, 20, 0.16), rgba(255, 255, 255, 0.04));
+        border-color: rgba(229, 9, 20, 0.42);
+        box-shadow: inset 0 0 0 1px rgba(229, 9, 20, 0.12);
+    }
+
+    .bella-episode-season-header {
+        margin-bottom: 0.85rem;
+    }
+
+    .bella-episode-season-scroll {
+        max-height: none;
+    }
+}
+
+/* Home hero alignment for movie, TV, and episode headers */
+.bella-immersive-page {
+    margin-top: calc(var(--bella-nav-height) * -1);
+}
+
+.bella-immersive-page .bella-detail-hero {
+    min-height: min(82vh, 52rem);
+    min-height: min(82svh, 52rem);
+}
+
+.bella-immersive-page .bella-detail-hero::before {
+    background:
+        linear-gradient(180deg, rgba(8, 8, 8, 0.84) 0%, rgba(8, 8, 8, 0.46) 5.5rem, rgba(8, 8, 8, 0.12) 10rem, rgba(8, 8, 8, 0) 15rem),
+        linear-gradient(90deg, rgba(20, 20, 20, 0.94) 0%, rgba(20, 20, 20, 0.82) 30%, rgba(20, 20, 20, 0.3) 62%, rgba(20, 20, 20, 0) 100%),
+        linear-gradient(180deg, rgba(20, 20, 20, 0.08) 0%, rgba(20, 20, 20, 0) 42%, rgba(20, 20, 20, 0.82) 82%, rgba(20, 20, 20, 1) 100%);
+}
+
+.bella-detail-hero {
+    min-height: min(78vh, 50rem);
+    min-height: min(78svh, 50rem);
+}
+
+.bella-detail-hero::before {
+    background:
+        linear-gradient(90deg, rgba(20, 20, 20, 0.94) 0%, rgba(20, 20, 20, 0.82) 30%, rgba(20, 20, 20, 0.3) 62%, rgba(20, 20, 20, 0) 100%),
+        linear-gradient(180deg, rgba(20, 20, 20, 0.08) 0%, rgba(20, 20, 20, 0) 42%, rgba(20, 20, 20, 0.82) 82%, rgba(20, 20, 20, 1) 100%);
+}
+
+.bella-detail-hero::after {
+    height: 11rem;
+    background: linear-gradient(180deg, rgba(20, 20, 20, 0), rgba(20, 20, 20, 1));
+}
+
+.bella-detail-hero-inner {
+    padding: 0 0 4.5rem;
+}
+
+.bella-detail-hero .bella-kicker {
+    margin-bottom: 0.8rem;
+}
+
+.bella-detail-title {
+    font-size: clamp(2.6rem, 5vw, 4.8rem);
+}
+
+.bella-detail-meta {
+    gap: 0.65rem;
+    margin-top: 1rem;
+}
+
+.bella-detail-description {
+    max-width: 34rem;
+    margin-top: 0.95rem;
+    font-size: 0.98rem;
+    line-height: 1.65;
+}
+
+.bella-movie-hero-inner .bella-detail-action-rail {
+    margin-top: 1.35rem;
+}
+
+.bella-movie-primary-actions .bella-button,
+.bella-movie-primary-actions .bella-inline-action,
+.bella-movie-primary-actions .bella-movie-primary-button,
+.bella-episode-nav-button {
+    min-height: 3.25rem;
+    padding: 0.95rem 1.5rem !important;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.bella-movie-primary-button,
+.bella-episode-nav-button.is-secondary {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(109, 109, 110, 0.56);
+    color: var(--bella-text);
+}
+
+.bella-movie-primary-button:hover,
+.bella-episode-nav-button.is-secondary:hover {
+    background: rgba(109, 109, 110, 0.82);
+}
+
+.bella-episode-nav-button {
+    white-space: nowrap;
+}
+
+.bella-movie-secondary-actions .bella-detail-subaction-button,
+.bella-movie-secondary-actions .bella-inline-action,
+.bella-movie-secondary-actions .bella-button-secondary {
+    min-height: 3.25rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(109, 109, 110, 0.56);
+    color: var(--bella-text);
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.bella-movie-secondary-actions .bella-detail-subaction-button:hover,
+.bella-movie-secondary-actions .bella-inline-action:hover,
+.bella-movie-secondary-actions .bella-button-secondary:hover {
+    background: rgba(109, 109, 110, 0.82);
+    color: var(--bella-text);
+}
+
+.bella-movie-action-rail .bella-movie-secondary-actions .bella-detail-subaction-button,
+.bella-movie-action-rail .bella-movie-secondary-actions .bella-inline-action {
+    min-width: 3.25rem;
+    height: 3.25rem;
+    min-height: 3.25rem;
+    padding: 0 1.15rem !important;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+.bella-movie-action-rail .bella-movie-report-button,
+.bella-movie-action-rail .bella-movie-share-button,
+.bella-movie-action-rail .bella-movie-trailer-button {
+    min-width: 6.25rem;
+}
+
+@media (max-width: 767px) {
+    .bella-immersive-page .bella-detail-hero {
+        min-height: 34rem;
+    }
+
+    .bella-immersive-page .bella-detail-hero::before {
+        background:
+            linear-gradient(180deg, rgba(8, 8, 8, 0.88) 0%, rgba(8, 8, 8, 0.56) 4.75rem, rgba(8, 8, 8, 0.16) 8.5rem, rgba(8, 8, 8, 0) 12rem),
+            linear-gradient(90deg, rgba(20, 20, 20, 0.95) 0%, rgba(20, 20, 20, 0.84) 34%, rgba(20, 20, 20, 0.42) 66%, rgba(20, 20, 20, 0.08) 100%),
+            linear-gradient(180deg, rgba(20, 20, 20, 0.12) 0%, rgba(20, 20, 20, 0) 36%, rgba(20, 20, 20, 0.86) 82%, rgba(20, 20, 20, 1) 100%);
+    }
+
+    .bella-detail-hero {
+        min-height: 34rem;
+    }
+
+    .bella-detail-hero-inner {
+        padding: 0 0 3.5rem;
+    }
+
+    .bella-detail-title {
+        font-size: clamp(2rem, 10vw, 3rem);
+    }
+
+    .bella-detail-description {
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .bella-movie-action-rail .bella-movie-primary-actions .bella-button,
+    .bella-movie-action-rail .bella-movie-primary-actions .bella-inline-action,
+    .bella-movie-action-rail .bella-movie-primary-actions .bella-movie-primary-button,
+    .bella-episode-action-rail .bella-movie-primary-actions .bella-button,
+    .bella-episode-action-rail .bella-movie-primary-actions .bella-inline-action,
+    .bella-episode-action-rail .bella-movie-primary-actions .bella-movie-primary-button {
+        min-height: 3rem;
+        padding: 0.85rem 1rem !important;
+        font-size: 0.9rem;
+    }
+
+    .bella-detail-subaction-button,
+    .bella-detail-subactions .bella-inline-action,
+    .bella-detail-subactions .bella-button-secondary,
+    .bella-movie-secondary-actions .bella-detail-subaction-button,
+    .bella-movie-secondary-actions .bella-inline-action {
+        width: 3rem;
+        height: 3rem;
+        min-height: 3rem;
+        min-width: 3rem;
+        padding: 0 !important;
+        border-color: rgba(255, 255, 255, 0.08);
+        background: rgba(109, 109, 110, 0.56);
     }
 }

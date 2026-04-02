@@ -11,15 +11,15 @@ class SeasonComponent extends Component
     public $model;
     public $type;
     public $seasonId;
-    public $selectEpisode;
+    public $currentEpisodeId;
     public $openSort;
     public $episode_number;
     public $season_number;
 
-    public function mount($model,$seasonId = null,$type = null,$selectEpisode = null) {
+    public function mount($model,$seasonId = null,$type = null,$currentEpisodeId = null) {
         $this->model = $model;
         $this->type = $type;
-        $this->selectEpisode = $selectEpisode;
+        $this->currentEpisodeId = $currentEpisodeId;
         $this->seasonId = $seasonId;
     }
     public function render()

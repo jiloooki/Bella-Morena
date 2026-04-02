@@ -309,6 +309,38 @@ class WatchController extends Controller
             ->where('episode_number', $episode)
             ->firstOrFail() ?? abort(404);
 
+        $previousEpisode = PostEpisode::where('post_id', $listing->id)
+            ->where('status', 'publish')
+            ->aired()
+            ->where(function ($query) use ($episode) {
+                $query
+                    ->where('season_number', '<', $episode->season_number)
+                    ->orWhere(function ($query) use ($episode) {
+                        $query
+                            ->where('season_number', $episode->season_number)
+                            ->where('episode_number', '<', $episode->episode_number);
+                    });
+            })
+            ->orderByRaw('season_number + 0 desc')
+            ->orderByRaw('episode_number + 0 desc')
+            ->first();
+
+        $nextEpisode = PostEpisode::where('post_id', $listing->id)
+            ->where('status', 'publish')
+            ->aired()
+            ->where(function ($query) use ($episode) {
+                $query
+                    ->where('season_number', '>', $episode->season_number)
+                    ->orWhere(function ($query) use ($episode) {
+                        $query
+                            ->where('season_number', $episode->season_number)
+                            ->where('episode_number', '>', $episode->episode_number);
+                    });
+            })
+            ->orderByRaw('season_number + 0 asc')
+            ->orderByRaw('episode_number + 0 asc')
+            ->first();
+
         $genres = $listing->genres->modelKeys();
         $recommends = Post::where('type', 'tv')->whereHas('genres', function ($q) use ($genres) {
             $q->whereIn('genres.id', $genres);
@@ -402,7 +434,7 @@ class WatchController extends Controller
             $episode->save();
 
         }
-        return view('watch.episode', compact('config', 'listing', 'episode', 'recommends'));
+        return view('watch.episode', compact('config', 'listing', 'episode', 'previousEpisode', 'nextEpisode', 'recommends'));
     }
 
     public function broadcast(Request $request, $slug)

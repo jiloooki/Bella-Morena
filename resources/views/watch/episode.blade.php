@@ -2,14 +2,42 @@
 
 @section('content')
     @php
+        $episodeDescription = $episode->overview ?: $listing->overview;
+        $episodeRuntime = $episode->runtime ?: $listing->runtime;
+        $shareTitle = trim($listing->title.' - '.$episode->name);
+        $heroEpisodeLabel = sprintf('S%02d E%02d', $episode->season_number, $episode->episode_number);
     @endphp
-    <div x-data="{ trailerOpen: false, iframeSrc: '', downloadOpen: false }">
+
+    <div
+        class="bella-page bella-immersive-page bella-detail-page"
+        x-data="{
+            trailerOpen: false,
+            iframeSrc: '',
+            downloadOpen: false,
+            async sharePage() {
+                const payload = {
+                    title: @js($shareTitle),
+                    url: window.location.href
+                };
+
+                try {
+                    if (navigator.share) {
+                        await navigator.share(payload);
+                    } else if (navigator.clipboard) {
+                        await navigator.clipboard.writeText(payload.url);
+                    }
+                } catch (error) {
+                }
+            }
+        }"
+    >
         <section class="bella-detail-hero" id="details">
             <img src="{{ $listing->coverurl ?: $listing->imageurl }}" alt="{{ $episode->name }}" class="bella-detail-backdrop">
 
             <div class="bella-detail-shell">
-                <div class="bella-detail-hero-inner">
-                    <div class="bella-kicker">{{ __('Episode') }}</div>
+                <div class="bella-detail-hero-inner bella-movie-hero-inner bella-episode-hero-inner">
+                    <div class="bella-kicker">{{ $heroEpisodeLabel }}</div>
+
                     <p class="text-sm uppercase tracking-[0.3em] text-gray-300 mb-3">
                         <a href="{{ route('tv', $listing->slug) }}" class="hover:text-white">{{ $listing->title }}</a>
                     </p>
@@ -17,52 +45,107 @@
                     <h1 class="bella-detail-title">{{ $episode->name }}</h1>
 
                     <div class="bella-detail-meta">
-                        <span class="bella-meta-pill is-strong">{{ __('S:season E:episode', ['season' => $episode->season_number, 'episode' => $episode->episode_number]) }}</span>
+                        @if($listing->vote_average)
+                            <span class="bella-meta-pill is-strong">★ {{ number_format((float) $listing->vote_average, 1) }}</span>
+                        @endif
+                        <span class="bella-meta-pill {{ !$listing->vote_average ? 'is-strong' : '' }}">{{ __('S:season E:episode', ['season' => $episode->season_number, 'episode' => $episode->episode_number]) }}</span>
                         @if($episode->air_date)
                             <span class="bella-meta-pill">{{ $episode->air_date->translatedFormat('Y') }}</span>
                         @elseif($listing->release_date)
                             <span class="bella-meta-pill">{{ $listing->release_date->translatedFormat('Y') }}</span>
                         @endif
-                        @if($listing->vote_average)
-                            <span class="bella-meta-pill">★ {{ number_format((float) $listing->vote_average, 1) }}</span>
+                        @if($episodeRuntime)
+                            <span class="bella-meta-pill">{{ __(':time min', ['time' => $episodeRuntime]) }}</span>
                         @endif
-                        @if($episode->runtime)
-                            <span class="bella-meta-pill">{{ __(':time min', ['time' => $episode->runtime]) }}</span>
-                        @elseif($listing->runtime)
-                            <span class="bella-meta-pill">{{ __(':time min', ['time' => $listing->runtime]) }}</span>
-                        @endif
+                        @foreach($listing->genres->take(2) as $genre)
+                            <span class="bella-meta-pill">{{ $genre->title }}</span>
+                        @endforeach
                     </div>
 
-                    <p class="bella-detail-description bella-clamp-3">
-                        {{ $episode->overview ?: $listing->overview }}
+                    <p class="bella-detail-description bella-clamp-2">
+                        {{ $episodeDescription }}
                     </p>
 
-                    <div class="bella-detail-actions">
-                        <a href="#player" class="bella-button">
-                            <span>▶</span>
-                            <span>{{ __('Play') }}</span>
-                        </a>
+                    <div class="bella-detail-action-rail bella-movie-action-rail bella-episode-action-rail">
+                        <div class="bella-detail-actions-primary bella-movie-primary-actions">
+                            @if($previousEpisode)
+                                <a
+                                    href="{{ route('episode', ['slug' => $listing->slug, 'season' => $previousEpisode->season_number, 'episode' => $previousEpisode->episode_number]) }}"
+                                    class="bella-inline-action bella-movie-primary-button bella-episode-nav-button is-secondary"
+                                >
+                                    <span>{{ __('Previous Episode') }}</span>
+                                </a>
+                            @else
+                                <span class="bella-inline-action bella-movie-primary-button bella-episode-nav-button is-secondary is-disabled">
+                                    <span>{{ __('Previous Episode') }}</span>
+                                </span>
+                            @endif
 
-                        <livewire:watchlist-component :model="$listing"/>
-                        <livewire:reaction-component :model="$episode"/>
-                        <livewire:report-component :model="$episode"/>
+                            @if($nextEpisode)
+                                <a
+                                    href="{{ route('episode', ['slug' => $listing->slug, 'season' => $nextEpisode->season_number, 'episode' => $nextEpisode->episode_number]) }}"
+                                    class="bella-button bella-episode-nav-button"
+                                >
+                                    <span>{{ __('Next Episode') }}</span>
+                                </a>
+                            @else
+                                <span class="bella-button bella-episode-nav-button is-disabled">
+                                    <span>{{ __('Next Episode') }}</span>
+                                </span>
+                            @endif
 
-                        @if($listing->trailer)
-                            <button class="bella-button-secondary bella-hide-mobile" @click="trailerOpen = true; iframeSrc = '{{ $listing->trailer }}'">
-                                <span>ⓘ</span>
-                                <span>{{ __('Trailer') }}</span>
+                            <livewire:watchlist-component
+                                :model="$listing"
+                                showTextAlways="true"
+                                buttonClass="bella-movie-primary-button bella-episode-watchlist-button"
+                            />
+                        </div>
+
+                        <div class="bella-detail-subactions bella-movie-secondary-actions">
+                            <livewire:reaction-component
+                                :model="$episode"
+                                hideLikeLabel="true"
+                                wrapperClass="bella-detail-subaction-group bella-movie-secondary-row"
+                                buttonClass="bella-detail-subaction-button bella-movie-icon-button"
+                            />
+
+                            <livewire:report-component
+                                :model="$episode"
+                                buttonClass="bella-detail-subaction-button bella-movie-report-button"
+                                showDesktopLabel="true"
+                            />
+
+                            <button
+                                type="button"
+                                class="bella-detail-subaction-button bella-movie-share-button"
+                                @click="sharePage()"
+                                aria-label="{{ __('Share') }}"
+                            >
+                                <x-ui.icon name="link" class="w-4 h-4 shrink-0" fill="currentColor"/>
+                                <span class="bella-detail-subaction-label bella-movie-secondary-label">{{ __('Share') }}</span>
                             </button>
-                        @endif
+
+                            @if($listing->trailer)
+                                <button
+                                    type="button"
+                                    class="bella-detail-subaction-button bella-movie-trailer-button bella-hide-mobile"
+                                    @click="trailerOpen = true; iframeSrc = '{{ $listing->trailer }}'"
+                                >
+                                    <x-ui.icon name="movie" class="w-4 h-4 shrink-0" stroke="currentColor"/>
+                                    <span class="bella-detail-subaction-label">{{ __('Trailer') }}</span>
+                                </button>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <div class="bella-detail-content">
+        <div class="bella-detail-content bella-episode-detail-content">
             <div class="bella-detail-shell bella-section-stack">
-                <div id="player">
+                <section id="player" class="bella-episode-player-shell">
                     <livewire:watch-component :listing="$episode"/>
-                </div>
+                </section>
 
                 @if(isset($listing->arguments->information))
                     <div class="bella-detail-panel !border-red-500/40 !bg-red-500/10">
@@ -73,118 +156,118 @@
                     </div>
                 @endif
 
-                <div class="bella-detail-grid">
-                    <div class="bella-detail-panel">
-                        <div class="bella-detail-summary">
-                            <div class="bella-detail-summary-top">
-                                <div class="bella-detail-thumb">
-                                    <img src="{{ $listing->imageurl }}" alt="{{ $listing->title }}" class="w-full h-full object-cover">
+                <div class="bella-episode-layout-grid">
+                    <aside class="bella-episode-sidebar-column">
+                        <livewire:season-component :model="$listing" type="episode" :currentEpisodeId="$episode->id" :seasonId="$episode->season->id"/>
+                    </aside>
+
+                    <div class="bella-episode-main-column">
+                        <div class="bella-detail-panel bella-episode-details-panel">
+                            <div class="bella-episode-details-header">
+                                <div>
+                                    <p class="bella-detail-summary-kicker">{{ __('Now Watching') }}</p>
+                                    <h2 class="bella-section-heading !mb-1">{{ __('About this episode') }}</h2>
+                                    <p class="text-sm text-gray-400">
+                                        {{ __('Season :season, Episode :episode of :title', ['season' => $episode->season_number, 'episode' => $episode->episode_number, 'title' => $listing->title]) }}
+                                    </p>
                                 </div>
 
-                                <div class="bella-detail-summary-main">
-                                    <div class="bella-detail-summary-head">
-                                        <div class="bella-detail-summary-copy">
-                                            <p class="bella-detail-summary-kicker">{{ $listing->title }}</p>
-                                            <h2 class="bella-detail-summary-title">{{ $episode->name }}</h2>
-                                            <div class="bella-detail-summary-meta">
-                                                <span>{{ __('S:season E:episode', ['season' => $episode->season_number, 'episode' => $episode->episode_number]) }}</span>
-                                                @if($episode->air_date)
-                                                    <span>{{ $episode->air_date->translatedFormat('Y') }}</span>
-                                                @endif
-                                                @if($episode->runtime)
-                                                    <span>{{ __(':time min', ['time' => $episode->runtime]) }}</span>
-                                                @elseif($listing->runtime)
-                                                    <span>{{ __(':time min', ['time' => $listing->runtime]) }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
+                                @if(count($episode->downloads) > 0)
+                                    <button type="button" class="bella-button-secondary bella-detail-secondary-button bella-episode-download-button" @click="downloadOpen = true">
+                                        {{ __('Download') }}
+                                    </button>
+                                @endif
+                            </div>
 
-                                        <div class="bella-detail-summary-actions">
-                                            @if($listing->trailer)
-                                                <button type="button" class="bella-button-secondary bella-detail-secondary-button" @click="trailerOpen = true; iframeSrc = '{{ $listing->trailer }}'">
-                                                    {{ __('Watch trailer') }}
-                                                </button>
-                                            @endif
+                            @if($episodeDescription)
+                                <div
+                                    class="bella-episode-description-block"
+                                    x-data="{
+                                        expanded: false,
+                                        canExpand: false,
+                                        measure() {
+                                            const el = this.$refs.description;
 
-                                            @if(count($episode->downloads) > 0)
-                                                <button type="button" class="bella-button bella-detail-secondary-button" @click="downloadOpen = true">
-                                                    {{ __('Download') }}
-                                                </button>
-                                            @endif
+                                            if (!el) {
+                                                this.canExpand = false;
+                                                return;
+                                            }
+
+                                            this.canExpand = el.scrollHeight > el.clientHeight + 2;
+                                        }
+                                    }"
+                                    x-init="$nextTick(() => measure())"
+                                    @resize.window.debounce.150ms="measure()"
+                                >
+                                    <p
+                                        x-ref="description"
+                                        class="bella-detail-description bella-detail-copy bella-episode-copy !max-w-none"
+                                        :class="{ 'line-clamp-3': !expanded }"
+                                    >
+                                        {{ $episodeDescription }}
+                                    </p>
+
+                                    <button
+                                        type="button"
+                                        class="bella-episode-read-more"
+                                        x-show="canExpand"
+                                        x-cloak
+                                        @click="expanded = !expanded"
+                                    >
+                                        <span x-text="expanded ? @js(__('Read Less')) : @js(__('Read More'))"></span>
+                                    </button>
+                                </div>
+                            @endif
+
+                            <div class="bella-episode-facts-grid">
+                                <div class="bella-episode-fact">
+                                    <div class="bella-episode-fact-label">{{ __('Series') }}</div>
+                                    <div class="bella-episode-fact-value">
+                                        <a href="{{ route('tv', $listing->slug) }}" class="hover:underline">{{ $listing->title }}</a>
+                                    </div>
+                                </div>
+
+                                @if($episode->air_date)
+                                    <div class="bella-episode-fact">
+                                        <div class="bella-episode-fact-label">{{ __('Aired') }}</div>
+                                        <div class="bella-episode-fact-value">{{ $episode->air_date->translatedFormat('d M, Y') }}</div>
+                                    </div>
+                                @endif
+
+                                @if($episodeRuntime)
+                                    <div class="bella-episode-fact">
+                                        <div class="bella-episode-fact-label">{{ __('Runtime') }}</div>
+                                        <div class="bella-episode-fact-value">{{ __(':time min', ['time' => $episodeRuntime]) }}</div>
+                                    </div>
+                                @endif
+
+                                @if($listing->country_id)
+                                    <div class="bella-episode-fact">
+                                        <div class="bella-episode-fact-label">{{ __('Country') }}</div>
+                                        <div class="bella-episode-fact-value">
+                                            <a href="{{ route('country', ['country' => $listing->country->slug]) }}" class="hover:underline">{{ $listing->country->name }}</a>
                                         </div>
                                     </div>
+                                @endif
+                            </div>
 
-                                    <p class="bella-detail-description bella-detail-copy !max-w-none">{{ $episode->overview ?: $listing->overview }}</p>
+                            @if(isset($listing->tags) && $listing->tags->count())
+                                <div class="bella-episode-tag-block">
+                                    <div class="bella-info-label">{{ __('Tags') }}</div>
 
-                                    <div class="bella-info-grid bella-detail-meta-list">
-                                        <div class="bella-info-row">
-                                            <div class="bella-info-label">{{ __('Series') }}</div>
-                                            <div><a href="{{ route('tv', $listing->slug) }}" class="hover:underline">{{ $listing->title }}</a></div>
-                                        </div>
-
-                                        <div class="bella-info-row">
-                                            <div class="bella-info-label">{{ __('Episode') }}</div>
-                                            <div>{{ __('Season :season, Episode :episode', ['season' => $episode->season_number, 'episode' => $episode->episode_number]) }}</div>
-                                        </div>
-
-                                        @if($episode->air_date)
-                                            <div class="bella-info-row">
-                                                <div class="bella-info-label">{{ __('Aired') }}</div>
-                                                <div>{{ $episode->air_date->translatedFormat('d M, Y') }}</div>
-                                            </div>
-                                        @endif
-
-                                        @if($listing->country_id)
-                                            <div class="bella-info-row">
-                                                <div class="bella-info-label">{{ __('Country') }}</div>
-                                                <div>
-                                                    <a href="{{ route('country',['country'=> $listing->country->slug]) }}" class="hover:underline">{{ $listing->country->name }}</a>
-                                                </div>
-                                            </div>
-                                        @endif
-
-                                        @if(count($listing->genres) > 0)
-                                            <div class="bella-info-row">
-                                                <div class="bella-info-label">{{ __('Genre') }}</div>
-                                                <div>
-                                                    @foreach($listing->genres as $genre)
-                                                        <a href="{{ route('genre',['genre' => $genre->slug]) }}" class="hover:underline not-last-child-after inline-block mr-1 after:content-[','] last:mr-0 last:after:hidden">{{ $genre->title }}</a>
-                                                    @endforeach
-                                                </div>
-                                            </div>
-                                        @endif
-
-                                        @if(count($listing->peoples) > 0)
-                                            <div class="bella-info-row">
-                                                <div class="bella-info-label">{{ __('Cast') }}</div>
-                                                <div>
-                                                    @foreach($listing->peoples as $people)
-                                                        <a href="{{ route('people',['slug'=> $people->slug]) }}" class="hover:underline not-last-child-after inline-block mr-1 after:content-[','] last:mr-0 last:after:hidden">{{ $people->name }}</a>
-                                                    @endforeach
-                                                </div>
-                                            </div>
-                                        @endif
-                                    </div>
-
-                                    <div class="bella-tag-list">
+                                    <div class="bella-tag-list bella-movie-tag-list">
                                         @include('watch.partials.tag')
                                     </div>
                                 </div>
-                            </div>
+                            @endif
                         </div>
-                    </div>
 
-                    <div>
-                        <livewire:season-component :model="$listing" type="episode" :selectEpisode="$episode->episode_number" :seasonId="$episode->season->id"/>
+                        @include('partials.ads', ['id' => 1])
                     </div>
                 </div>
-
-                @include('partials.ads',['id'=> 1])
             </div>
 
-            <livewire:comments :model="$episode"/>
-
-            <section class="bella-row">
+            <section class="bella-row bella-tv-related-row bella-episode-related-row">
                 <div class="bella-row-shell">
                     <div class="bella-row-header">
                         <h3 class="bella-row-title">{{ __('More Like This') }}</h3>
@@ -197,6 +280,8 @@
                     </div>
                 </div>
             </section>
+
+            <livewire:comments :model="$episode"/>
         </div>
 
         <div class="fixed inset-0 z-50 bella-modal-overlay" x-show="trailerOpen" style="display: none;"></div>
