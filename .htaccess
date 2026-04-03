@@ -3,14 +3,12 @@
         Options -MultiViews
     </IfModule>
     RewriteEngine on
+    # Block direct web access to hidden files, but allow ACME challenges.
+    RewriteRule "(^|/)\.(?!well-known/)" - [F,L]
     RewriteCond %{THE_REQUEST} ^.*/index\.php
     RewriteRule ^(.*)index.php$ /$1 [R=301,L]
     RewriteCond %{REQUEST_URI} !^public
     RewriteRule ^(.*)$ public/$1 [L]
-    <Files ~ "\.(env|config.js|md|gitignore|gitattributes|lock)$">
-        Order allow,deny
-        Deny from all
-    </Files>
 </IfModule>
 
 <IfModule mod_expires.c>
