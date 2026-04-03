@@ -4,25 +4,25 @@
        @click.outside="sidebarToggle = false">
     <div
         class="flex flex-col overflow-y-auto scrollbar-y h-full px-2 lg:px-4 scrollbar scrollbar-thumb-gray-100 dark:scrollbar-thumb-white/10 scrollbar-thin scrollbar-track-transparent">
-        @foreach(config('menus') as $menu)
-            @if($menu->layout == 'all' OR $menu->layout == 'header')
-                @if($menu->route)
-                    <a href="{{route($menu->route)}}"
+        @foreach($sharedMenus ?? [] as $menu)
+            @if($menu['layout'] == 'all' OR $menu['layout'] == 'header')
+                @if($menu['route'])
+                    <a href="{{route($menu['route'])}}"
                        class="px-3 gap-x-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 hover:bg-gray-50/70 hover:border-primary-500 dark:hover:text-gray-100 dark:hover:bg-gray-900 transition rounded-lg flex items-center ">
-                        <x-ui.icon stroke="currentColor" stroke-width="1.75" name="{{$menu->icon}}"
+                        <x-ui.icon stroke="currentColor" stroke-width="1.75" name="{{$menu['icon']}}"
                                    class="w-[22px] h-[22px]" x-bind:class="compactToggle ? '!w-6 !h-6' : ''"/>
                         <div
                             class="tracking-tighter whitespace-nowrap flex-1 line-clamp-1"
-                            :class="compactToggle ? 'lg:hidden' : 'block'">{{__($menu->title)}}</div>
+                            :class="compactToggle ? 'lg:hidden' : 'block'">{{__($menu['title'])}}</div>
                     </a>
-                @elseif($menu->url)
-                    <a href="{{$menu->url}}"
+                @elseif($menu['url'])
+                    <a href="{{$menu['url']}}"
                        class="px-4 gap-x-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 hover:bg-gray-50/70 hover:border-primary-500 dark:hover:text-gray-100 dark:hover:bg-gray-900 transition rounded-lg flex items-center ">
                         <div class="w-4 h-4 border-2 rounded-full border-gray-400"
                              x-bind:class="compactToggle ? '!w-4 !h-4' : ''"></div>
                         <div
                             class="tracking-tighter whitespace-nowrap flex-1 line-clamp-1"
-                            :class="compactToggle ? 'lg:hidden' : 'block'">{{__($menu->title)}}</div>
+                            :class="compactToggle ? 'lg:hidden' : 'block'">{{__($menu['title'])}}</div>
                     </a>
                 @endif
             @endif

@@ -42,8 +42,8 @@
                     <a href="{{ route('request') }}">{{ __('Request') }}</a>
                     <a href="{{ route('peoples') }}">{{ __('People') }}</a>
                     <a href="{{ route('contact') }}">{{ __('Contact') }}</a>
-                    @foreach(config('pages')->take(2) as $page)
-                        <a href="{{ route('page', $page->slug) }}">{{ $page->title }}</a>
+                    @foreach(collect($sharedPages ?? [])->take(2) as $page)
+                        <a href="{{ route('page', $page['slug']) }}">{{ $page['title'] }}</a>
                     @endforeach
                 </div>
             </div>
