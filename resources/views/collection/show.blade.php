@@ -7,15 +7,8 @@
                 <h1 class="text-gray-900 dark:text-white text-2xl font-semibold flex items-center flex-1 capitalize">{{$listing->title}}</h1>
             </div>
             <div class="@if(config('settings.listing_type') == 'masonry'){{'grid-masonry'}}@else{{'grid grid-cols-2 xl:grid-cols-6 2xl:grid-cols-8 gap-6'}}@endif">
-                @php
-                    $index = 0;
-                @endphp
-                @foreach($listing->games as $listing)
-                    <x-game route="{{route('game.play',$listing->slug)}}" image="{{$listing->image}}"
-                            title="{{$listing->title}}" index="{{$index}}"/>
-                    @php
-                        $index++;
-                    @endphp
+                @foreach($listing->posts as $post)
+                    <x-ui.post :listing="$post"/>
                 @endforeach
             </div>
             @include('partials.ads',['id'=> 4])
