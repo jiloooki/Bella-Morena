@@ -21,15 +21,14 @@ if (config('settings.language')) {
 // Deployment smoke test trigger.
 if (config('settings.landing') == 'active') {
     Route::get('/', [\App\Http\Controllers\IndexController::class, 'landing'])->name('landing');
-    Route::post('/', [\App\Http\Controllers\IndexController::class, 'search'])->name('landing');
+    Route::post('/', [\App\Http\Controllers\IndexController::class, 'search'])->name('landing.search');
     Route::get('/home', [\App\Http\Controllers\IndexController::class, 'index'])->name('index');
 } else {
     Route::get('/', [\App\Http\Controllers\IndexController::class, 'index'])->name('index');
 }
 
 // Browse
-Route::get(__('browse'), [App\Http\Controllers\BrowseController::class, 'index'])->name('browse');
-Route::post(__('browse'), [App\Http\Controllers\BrowseController::class, 'index'])->name('browse');
+Route::match(['get', 'post'], __('browse'), [App\Http\Controllers\BrowseController::class, 'index'])->name('browse');
 Route::get(__('top-imdb'), [App\Http\Controllers\BrowseController::class, 'index'])->name('topimdb');
 Route::get(__('movies'), [App\Http\Controllers\BrowseController::class, 'index'])->name('movies');
 Route::get(__('anime'), [App\Http\Controllers\BrowseController::class, 'index'])->name('anime');
