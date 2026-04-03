@@ -10,37 +10,12 @@ if ! command -v php >/dev/null 2>&1; then
   exit 1
 fi
 
-COMPOSER_CMD=()
+PHP_CMD=(php -d allow_url_fopen=On)
+COMPOSER_PHAR="/home/bellamorena/composer.phar"
+COMPOSER_CMD=("${PHP_CMD[@]}" "$COMPOSER_PHAR")
 
-if command -v composer >/dev/null 2>&1; then
-  COMPOSER_CMD=("$(command -v composer)")
-else
-  for candidate in \
-    /usr/local/bin/composer \
-    /opt/cpanel/composer/bin/composer \
-    "$HOME/bin/composer"
-  do
-    if [ -x "$candidate" ]; then
-      COMPOSER_CMD=("$candidate")
-      break
-    fi
-  done
-
-  if [ "${#COMPOSER_CMD[@]}" -eq 0 ]; then
-    for phar in \
-      "$APP_DIR/composer.phar" \
-      "$HOME/composer.phar"
-    do
-      if [ -f "$phar" ]; then
-        COMPOSER_CMD=(php "$phar")
-        break
-      fi
-    done
-  fi
-fi
-
-if [ "${#COMPOSER_CMD[@]}" -eq 0 ]; then
-  echo "Composer is required on the server. Checked PATH, /usr/local/bin/composer, /opt/cpanel/composer/bin/composer, and composer.phar." >&2
+if [ ! -f "$COMPOSER_PHAR" ]; then
+  echo "Composer PHAR not found at $COMPOSER_PHAR." >&2
   exit 1
 fi
 
@@ -60,14 +35,14 @@ mkdir -p \
 maintenance_mode=0
 
 if [ -f vendor/autoload.php ]; then
-  if php artisan down --retry=60; then
+  if "${PHP_CMD[@]}" artisan down --retry=60; then
     maintenance_mode=1
   fi
 fi
 
 cleanup() {
   if [ "$maintenance_mode" -eq 1 ]; then
-    php artisan up || true
+    "${PHP_CMD[@]}" artisan up || true
   fi
 }
 
@@ -76,15 +51,15 @@ trap cleanup EXIT
 echo "Using Composer command: ${COMPOSER_CMD[*]}"
 "${COMPOSER_CMD[@]}" install --no-dev --prefer-dist --no-interaction --optimize-autoloader
 
-php artisan migrate --force
-php artisan storage:link || true
-php artisan optimize:clear
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+"${PHP_CMD[@]}" artisan migrate --force
+"${PHP_CMD[@]}" artisan storage:link || true
+"${PHP_CMD[@]}" artisan optimize:clear
+"${PHP_CMD[@]}" artisan config:cache
+"${PHP_CMD[@]}" artisan route:cache
+"${PHP_CMD[@]}" artisan view:cache
 
 if [ "$maintenance_mode" -eq 1 ]; then
-  php artisan up
+  "${PHP_CMD[@]}" artisan up
 fi
 
 trap - EXIT
