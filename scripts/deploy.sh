@@ -10,8 +10,37 @@ if ! command -v php >/dev/null 2>&1; then
   exit 1
 fi
 
-if ! command -v composer >/dev/null 2>&1; then
-  echo "Composer is required on the server." >&2
+COMPOSER_CMD=()
+
+if command -v composer >/dev/null 2>&1; then
+  COMPOSER_CMD=("$(command -v composer)")
+else
+  for candidate in \
+    /usr/local/bin/composer \
+    /opt/cpanel/composer/bin/composer \
+    "$HOME/bin/composer"
+  do
+    if [ -x "$candidate" ]; then
+      COMPOSER_CMD=("$candidate")
+      break
+    fi
+  done
+
+  if [ "${#COMPOSER_CMD[@]}" -eq 0 ]; then
+    for phar in \
+      "$APP_DIR/composer.phar" \
+      "$HOME/composer.phar"
+    do
+      if [ -f "$phar" ]; then
+        COMPOSER_CMD=(php "$phar")
+        break
+      fi
+    done
+  fi
+fi
+
+if [ "${#COMPOSER_CMD[@]}" -eq 0 ]; then
+  echo "Composer is required on the server. Checked PATH, /usr/local/bin/composer, /opt/cpanel/composer/bin/composer, and composer.phar." >&2
   exit 1
 fi
 
@@ -44,7 +73,8 @@ cleanup() {
 
 trap cleanup EXIT
 
-composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+echo "Using Composer command: ${COMPOSER_CMD[*]}"
+"${COMPOSER_CMD[@]}" install --no-dev --prefer-dist --no-interaction --optimize-autoloader
 
 php artisan migrate --force
 php artisan storage:link || true
