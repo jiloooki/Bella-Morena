@@ -17,21 +17,23 @@
             ->unique('id')
             ->values();
 
+        $homeRowLimit = 14;
+
         $newReleases = $mixed
             ->filter(fn ($item) => $item->release_date)
             ->sortByDesc(fn ($item) => optional($item->release_date)->timestamp ?? 0)
             ->values()
-            ->take(12);
+            ->take($homeRowLimit);
 
         $topRated = $mixed
             ->sortByDesc(fn ($item) => (float) $item->vote_average)
             ->values()
-            ->take(12);
+            ->take($homeRowLimit);
 
         $rows = collect([
             [
                 'title' => __('Trending Now'),
-                'listings' => $featured->isNotEmpty() ? $featured : $mixed->take(12),
+                'listings' => $featured->isNotEmpty() ? $featured : $mixed->take($homeRowLimit),
                 'seeAll' => route('trending'),
             ],
             [

@@ -61,7 +61,7 @@ class MovieController extends Controller
             return $query->whereHas('genres', function ($query) use ($genre_id) {
                 return $query->where('genres.id', $genre_id);
             });
-        })->orderBy('view', $sort)->orderBy('id', 'desc')->paginate($perPage)->appends([
+        })->orderBy('release_date', $sort)->orderBy('created_at', 'desc')->orderBy('id', 'desc')->paginate($perPage)->appends([
             'q' => $search,
             'sort' => $sort,
             'sorting' => $sort,

@@ -104,6 +104,25 @@ class Post extends Model
         return $query->where('title', 'like', '%'.$value.'%');
     }
 
+    public function scopeReleased(Builder $query): Builder
+    {
+        return $query
+            ->whereNotNull('release_date')
+            ->whereDate('release_date', '<=', now()->startOfDay()->toDateString());
+    }
+
+    public function scopeComingSoon(Builder $query): Builder
+    {
+        return $query
+            ->whereNotNull('release_date')
+            ->whereDate('release_date', '>', now()->startOfDay()->toDateString());
+    }
+
+    public function getIsComingSoonAttribute(): bool
+    {
+        return (bool) ($this->release_date && $this->release_date->gt(now()->startOfDay()));
+    }
+
     public function tags()
     {
         return $this->belongsToMany(Tag::class, 'post_tags', 'post_id', 'tagged_id');

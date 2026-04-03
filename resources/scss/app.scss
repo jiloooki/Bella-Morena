@@ -262,11 +262,11 @@ body.bella-embed-body ::selection {
 }
 
 .bella-navbar.is-solid {
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-    border-color: rgba(255, 255, 255, 0.05);
+    background: rgba(6, 6, 6, 0.62);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+    border-color: rgba(255, 255, 255, 0.08);
 }
 
 .bella-nav-inner {
@@ -705,10 +705,10 @@ body.bella-embed-body ::selection {
 }
 
 .bella-home-hero {
-    height: 85vh;
-    min-height: 85vh;
-    height: 85svh;
-    min-height: 85svh;
+    height: min(70vh, 46rem);
+    min-height: min(70vh, 46rem);
+    height: min(70svh, 46rem);
+    min-height: min(70svh, 46rem);
     padding-top: 80px;
 }
 
@@ -730,7 +730,7 @@ body.bella-embed-body ::selection {
 .bella-home-hero::before {
     background:
         linear-gradient(90deg, rgba(20, 20, 20, 0.94) 0%, rgba(20, 20, 20, 0.82) 30%, rgba(20, 20, 20, 0.3) 62%, rgba(20, 20, 20, 0) 100%),
-        linear-gradient(180deg, rgba(20, 20, 20, 0.08) 0%, rgba(20, 20, 20, 0) 42%, rgba(20, 20, 20, 0.82) 82%, rgba(20, 20, 20, 1) 100%);
+        linear-gradient(180deg, rgba(20, 20, 20, 0.12) 0%, rgba(20, 20, 20, 0) 28%, rgba(20, 20, 20, 0.38) 56%, rgba(20, 20, 20, 0.84) 78%, rgba(20, 20, 20, 1) 100%);
 }
 
 .bella-page-hero::after,
@@ -744,8 +744,8 @@ body.bella-embed-body ::selection {
 }
 
 .bella-home-hero::after {
-    height: 11rem;
-    background: linear-gradient(180deg, rgba(20, 20, 20, 0), rgba(20, 20, 20, 1));
+    height: 13rem;
+    background: linear-gradient(180deg, rgba(20, 20, 20, 0) 0%, rgba(20, 20, 20, 0.36) 32%, rgba(20, 20, 20, 0.9) 78%, rgba(20, 20, 20, 1) 100%);
 }
 
 .bella-hero-backdrop,
@@ -755,6 +755,10 @@ body.bella-embed-body ::selection {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.bella-home-hero .bella-hero-backdrop {
+    object-position: center top;
 }
 
 .bella-hero-inner,
@@ -771,7 +775,7 @@ body.bella-embed-body ::selection {
 
 .bella-home-hero .bella-hero-inner {
     max-width: 39rem;
-    padding: 0 0 4.5rem;
+    padding: 0 0 3.35rem;
 }
 
 .bella-detail-hero-inner {
@@ -1068,7 +1072,7 @@ body.bella-embed-body ::selection {
 
 .bella-row-section {
     position: relative;
-    margin-top: -5.5rem;
+    margin-top: -4.5rem;
     z-index: 3;
 }
 
@@ -1116,6 +1120,21 @@ body.bella-embed-body ::selection {
 
 .bella-row-track::-webkit-scrollbar {
     display: none;
+}
+
+.bella-home-row-track {
+    --bella-home-row-cols: 2;
+    --bella-home-row-gap: 1rem;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: calc((100% - ((var(--bella-home-row-cols) - 1) * var(--bella-home-row-gap))) / var(--bella-home-row-cols));
+    gap: var(--bella-home-row-gap);
+    overflow-x: auto;
+}
+
+.bella-home-row-track .bella-card {
+    flex: 0 0 auto;
+    min-width: 0;
 }
 
 .bella-card {
@@ -1276,11 +1295,20 @@ body.bella-embed-body ::selection {
     padding-top: 0.85rem;
 }
 
+.bella-card-footer .bella-card-title {
+    display: -webkit-box;
+    min-height: calc(1.35em * 2);
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
 .bella-card-subtitle {
     display: flex;
     flex-wrap: wrap;
     gap: 0.55rem;
     margin-top: 0.35rem;
+    min-height: 1.15rem;
     color: var(--bella-text-muted);
     font-size: 0.82rem;
 }
@@ -1959,7 +1987,7 @@ body.bella-embed-body ::selection {
 
 .bella-search-panel {
     --bella-search-panel-max-height: min(70vh, 42rem);
-    max-width: 68rem;
+    max-width: 42rem;
     max-height: var(--bella-search-panel-max-height);
     display: flex;
     flex-direction: column;
@@ -2018,19 +2046,19 @@ body.bella-embed-body ::selection {
 
 .bella-search-columns {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: 0;
     min-width: 0;
     align-items: start;
 }
 
 .bella-search-group {
-    padding: 1.25rem 1.4rem 1.4rem;
+    padding: 1.1rem 1.2rem 1.2rem;
     min-width: 0;
 }
 
 .bella-search-group + .bella-search-group {
-    border-left: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .bella-search-group-title {
@@ -2053,10 +2081,10 @@ body.bella-embed-body ::selection {
 
 .bella-search-item {
     display: grid;
-    grid-template-columns: 3.75rem minmax(0, 1fr);
-    gap: 0.95rem;
+    grid-template-columns: 3.25rem minmax(0, 1fr);
+    gap: 0.85rem;
     align-items: start;
-    padding: 0.75rem;
+    padding: 0.65rem 0.7rem;
     border-radius: 1rem;
     border: 1px solid transparent;
     transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
@@ -2071,9 +2099,9 @@ body.bella-embed-body ::selection {
 
 .bella-search-thumb {
     position: relative;
-    width: 3.75rem;
-    min-width: 3.75rem;
-    height: 5.625rem;
+    width: 3.25rem;
+    min-width: 3.25rem;
+    height: 4.8rem;
     overflow: hidden;
     border-radius: 0.85rem;
     background: #232323;
@@ -2107,20 +2135,20 @@ body.bella-embed-body ::selection {
 
 .bella-search-title {
     color: #fff;
-    font-size: 0.98rem;
+    font-size: 0.94rem;
     font-weight: 700;
     line-height: 1.35;
     display: -webkit-box;
     overflow: hidden;
-    -webkit-line-clamp: 1;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
 }
 
 .bella-search-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.55rem;
-    margin-top: 0.25rem;
+    gap: 0.45rem;
+    margin-top: 0.28rem;
     color: rgba(255, 255, 255, 0.58);
     font-size: 0.74rem;
     font-weight: 600;
@@ -2162,6 +2190,51 @@ body.bella-embed-body ::selection {
 
 .bella-browse-shell {
     padding-top: 1.25rem;
+}
+
+.bella-browse-shell .bella-card-link::after {
+    content: none;
+}
+
+.bella-browse-shell .bella-card-overlay {
+    display: none;
+}
+
+.bella-browse-shell .bella-card:hover .bella-card-link {
+    transform: none;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
+}
+
+.bella-browse-shell .bella-card-footer .bella-card-title {
+    display: -webkit-box;
+    min-height: calc(1.35em * 2);
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+@media (min-width: 640px) {
+    .bella-home-row-track {
+        --bella-home-row-gap: 1.25rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .bella-home-row-track {
+        --bella-home-row-cols: 4;
+    }
+}
+
+@media (min-width: 1280px) {
+    .bella-home-row-track {
+        --bella-home-row-cols: 6;
+    }
+}
+
+@media (min-width: 1536px) {
+    .bella-home-row-track {
+        --bella-home-row-cols: 7;
+    }
 }
 
 .bella-browse-header {
@@ -2421,15 +2494,14 @@ body.bella-embed-body ::selection {
 }
 
 .bella-tv-episode-toolbar {
-    position: relative;
-    top: auto;
+    position: static;
     z-index: 20;
     display: grid;
     gap: 0.6rem;
     margin-top: 0.9rem;
     padding: 0.45rem 0 0.75rem;
-    background: linear-gradient(180deg, rgba(24, 24, 24, 0.98) 0%, rgba(24, 24, 24, 0.96) 76%, rgba(24, 24, 24, 0.72) 100%);
-    backdrop-filter: blur(14px);
+    background: transparent;
+    backdrop-filter: none;
 }
 
 .bella-tv-latest-button {
@@ -2745,10 +2817,18 @@ body.bella-embed-body ::selection {
     }
 
     .bella-home-hero {
-        height: 85vh;
-        min-height: 85vh;
-        height: 85svh;
-        min-height: 85svh;
+        height: min(62vh, 38rem);
+        min-height: min(62vh, 38rem);
+        height: min(62svh, 38rem);
+        min-height: min(62svh, 38rem);
+    }
+
+    .bella-home-hero::after {
+        height: 10rem;
+    }
+
+    .bella-home-hero .bella-hero-inner {
+        padding-bottom: 2.85rem;
     }
 
     .bella-detail-hero {
@@ -2844,6 +2924,10 @@ body.bella-embed-body ::selection {
 
     .bella-nav-shell {
         padding-inline: 0.75rem;
+    }
+
+    .bella-browse-shell {
+        padding-inline: 1rem;
     }
 
     .bella-nav-inner {
@@ -2966,7 +3050,7 @@ body.bella-embed-body ::selection {
     }
 
     .bella-home-hero .bella-hero-inner {
-        padding: 0 0 3.5rem;
+        padding: 0 0 2.15rem;
     }
 
     .bella-detail-hero-inner {
@@ -2978,10 +3062,14 @@ body.bella-embed-body ::selection {
     }
 
     .bella-home-hero {
-        height: 85vh;
-        min-height: 85vh;
-        height: 85svh;
-        min-height: 85svh;
+        height: min(56vh, 30rem);
+        min-height: min(56vh, 30rem);
+        height: min(56svh, 30rem);
+        min-height: min(56svh, 30rem);
+    }
+
+    .bella-home-hero::after {
+        height: 8.5rem;
     }
 
     .bella-detail-hero {
@@ -2989,7 +3077,7 @@ body.bella-embed-body ::selection {
     }
 
     .bella-row-section {
-        margin-top: -2.5rem;
+        margin-top: -1.75rem;
     }
 
     .bella-home-rows {
@@ -3003,6 +3091,26 @@ body.bella-embed-body ::selection {
 
     .bella-card.is-episode {
         flex-basis: 15rem;
+    }
+
+    .bella-browse-shell .bella-card-footer {
+        padding-top: 0.75rem;
+    }
+
+    .bella-browse-shell .bella-card-title {
+        font-size: 0.88rem;
+        line-height: 1.32;
+    }
+
+    .bella-browse-shell .bella-card-footer .bella-card-title {
+        min-height: calc(1.32em * 2);
+    }
+
+    .bella-browse-shell .bella-card-subtitle {
+        margin-top: 0.3rem;
+        gap: 0.45rem;
+        font-size: 0.74rem;
+        line-height: 1.3;
     }
 
     .bella-hero-title {
@@ -3796,8 +3904,8 @@ body.bella-embed-body ::selection {
     }
 
     .bella-episode-sidebar-column .bella-episode-season-panel {
-        position: sticky;
-        top: calc(var(--bella-nav-height) + 1rem);
+        position: static;
+        top: auto;
     }
 }
 

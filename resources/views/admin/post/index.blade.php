@@ -1,9 +1,9 @@
 @extends('layouts.admin')
 @section('content')
     @php
-        $viewSort = in_array($request->input('sorting', $request->input('sort', 'desc')), ['asc', 'desc']) ? $request->input('sorting', $request->input('sort', 'desc')) : 'desc';
-        $nextViewSort = $viewSort === 'desc' ? 'asc' : 'desc';
-        $viewSortQuery = array_merge($request->except('page'), ['sort' => $nextViewSort, 'sorting' => $nextViewSort]);
+        $releaseSort = in_array($request->input('sorting', $request->input('sort', 'desc')), ['asc', 'desc']) ? $request->input('sorting', $request->input('sort', 'desc')) : 'desc';
+        $nextReleaseSort = $releaseSort === 'desc' ? 'asc' : 'desc';
+        $releaseSortQuery = array_merge($request->except('page'), ['sort' => $nextReleaseSort, 'sorting' => $nextReleaseSort]);
     @endphp
 
     <div class="container-fluid">
@@ -22,14 +22,14 @@
                         </th>
                         <th scope="col" class="px-6 py-3 text-left">
                             <a
-                                href="{{ route('admin.'.$config['route'].'.index', $viewSortQuery) }}"
+                                href="{{ route('admin.'.$config['route'].'.index', $releaseSortQuery) }}"
                                 class="inline-flex items-center gap-2 text-xs font-medium tracking-wide text-gray-700 transition hover:text-gray-900 dark:text-gray-200 dark:hover:text-white"
-                                title="{{ $viewSort === 'desc' ? __('Currently sorted by most views first') : __('Currently sorted by least views first') }}"
+                                title="{{ $releaseSort === 'desc' ? __('Currently sorted by newest release first') : __('Currently sorted by oldest release first') }}"
                             >
-                                <span>{{ __('Views') }}</span>
+                                <span>{{ __('Release') }}</span>
                                 <span class="inline-flex items-center gap-1 rounded-full border border-gray-200 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-gray-500 dark:border-gray-700 dark:text-gray-300">
-                                    <span>{{ $viewSort === 'desc' ? __('Top') : __('Low') }}</span>
-                                    <span aria-hidden="true">{{ $viewSort === 'desc' ? '↓' : '↑' }}</span>
+                                    <span>{{ $releaseSort === 'desc' ? __('Newest') : __('Oldest') }}</span>
+                                    <span aria-hidden="true">{{ $releaseSort === 'desc' ? '↓' : '↑' }}</span>
                                 </span>
                             </a>
                         </th>
@@ -39,6 +39,9 @@
 
                     <tbody>
                     @foreach($listings as $listing)
+                        @php
+                            $isComingSoon = $listing->is_coming_soon;
+                        @endphp
                         <tr>
                             <td>
 
@@ -50,8 +53,14 @@
                                              class="absolute inset-0 object-cover">
                                     </div>
                                     <div class="">
-                                        <div
-                                            class="font-medium group-hover:underline mb-2">{{$listing->title}}</div>
+                                        <div class="mb-2 flex flex-wrap items-center gap-2">
+                                            <div class="font-medium group-hover:underline">{{$listing->title}}</div>
+                                            @if($isComingSoon)
+                                                <span class="inline-flex items-center rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-amber-300">
+                                                    {{ __('Coming Soon') }}
+                                                </span>
+                                            @endif
+                                        </div>
                                         <div
                                             class="text-xs text-gray-400 dark:text-gray-500">{{Str::limit($listing->overview,80)}}</div>
                                     </div>
@@ -59,7 +68,10 @@
                             </td>
                             <td>
                                 <div class="text-sm font-medium text-gray-700 dark:text-gray-200">
-                                    {{number_format((int) $listing->view)}}
+                                    {{ $listing->release_date ? $listing->release_date->translatedFormat('M d, Y') : __('Unknown') }}
+                                </div>
+                                <div class="mt-1 text-xs text-gray-400 dark:text-gray-500">
+                                    {{ __('Added :date', ['date' => $listing->created_at->translatedFormat('M d, Y')]) }}
                                 </div>
                             </td>
                             <td>

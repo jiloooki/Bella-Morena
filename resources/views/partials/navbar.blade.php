@@ -1,4 +1,5 @@
 @php
+    $immersiveRoute = request()->routeIs('movie', 'tv', 'episode');
     $navItems = [
         ['label' => 'Home', 'route' => route('index'), 'active' => request()->routeIs('index')],
         ['label' => 'Movies', 'route' => route('movies'), 'active' => request()->routeIs('movies', 'movie')],
@@ -13,9 +14,11 @@
 @endphp
 
 <header
-    x-data="{ mobileOpen: false, solid: window.scrollY > 24, profileOpen: false }"
+    x-data="{ mobileOpen: false, immersive: @js($immersiveRoute), solid: false, profileOpen: false }"
     x-init="
-        const handleScroll = () => solid = window.scrollY > 24;
+        const threshold = immersive ? 72 : 24;
+        const handleScroll = () => solid = window.scrollY > threshold;
+        handleScroll();
         window.addEventListener('scroll', handleScroll);
         $watch('mobileOpen', value => document.body.classList.toggle('overflow-hidden', value));
     "

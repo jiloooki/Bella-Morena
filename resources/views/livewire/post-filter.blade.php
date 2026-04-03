@@ -17,7 +17,7 @@
                     <span class="bella-meta-pill">{{ count($tmdbResults) }}</span>
                 </div>
 
-                <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7 gap-5">
+                <div class="grid grid-cols-2 gap-x-4 gap-y-6 sm:gap-5 md:grid-cols-4 xl:grid-cols-7">
                     @foreach($tmdbResults as $tmdb)
                         <article class="bella-card">
                             <a href="{{ route($tmdb['type'] === 'movie' ? 'movie' : 'tv', 'tmdb-' . $tmdb['tmdb_id']) }}" class="bella-card-link">
@@ -60,7 +60,7 @@
             </section>
         @endif
 
-        <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7 gap-5">
+        <div class="grid grid-cols-2 gap-x-4 gap-y-6 sm:gap-5 md:grid-cols-4 xl:grid-cols-7">
             @for ($i = 1; $i <= 8; $i++)
                 <div class="bella-card animate-pulse" wire:loading wire:target="filter">
                     <div class="aspect-[2/3] rounded-[1.15rem] bg-white/5"></div>
@@ -72,17 +72,13 @@
             @endfor
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7 gap-5" wire:loading.remove wire:target="filter">
+        <div class="grid grid-cols-2 gap-x-4 gap-y-6 sm:gap-5 md:grid-cols-4 xl:grid-cols-7" wire:loading.remove wire:target="filter">
             @foreach($listings as $listing)
                 <x-ui.post :listing="$listing"/>
-
-                @if($loop->index == 6)
-                    <div class="col-span-full">
-                        @include('partials.ads',['id'=> 3])
-                    </div>
-                @endif
             @endforeach
         </div>
+
+        @include('partials.ads',['id'=> 3])
 
         <div class="bella-pagination">
             {{ $listings->links() }}

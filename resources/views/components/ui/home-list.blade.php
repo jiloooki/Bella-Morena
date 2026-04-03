@@ -24,7 +24,7 @@
                 @endif
             </div>
 
-            <div class="bella-row-track">
+            <div class="grid grid-cols-2 gap-x-4 gap-y-6 sm:gap-5 md:grid-cols-4 xl:grid-cols-7">
                 @foreach($items as $listing)
                     @if($card === 'episode')
                         <x-ui.episode :listing="$listing" />

@@ -49,8 +49,8 @@
                                 @foreach($posts as $post)
                                     @php
                                         $postYear = optional($post->release_date)->format('Y') ?: '—';
-                                        $postGenre = optional($post->genres->first())->title ?: '—';
                                         $postType = $post->type === 'movie' ? __('Movie') : __('TV Show');
+                                        $postGenre = optional($post->genres->first())->title ?: $postType;
                                     @endphp
                                     <a class="bella-search-item" href="{{ route($post->type, $post->slug) }}">
                                         <div class="bella-search-thumb">
@@ -65,9 +65,7 @@
                                             <div class="bella-search-meta">
                                                 <span>{{ $postYear }}</span>
                                                 <span>{{ $postGenre }}</span>
-                                                <span>{{ $postType }}</span>
                                             </div>
-                                            <div class="bella-search-summary">{{ Str::limit($post->overview, 110) }}</div>
                                         </div>
                                     </a>
                                 @endforeach
@@ -87,8 +85,8 @@
                                 @foreach($tmdbResults as $tmdb)
                                     @php
                                         $tmdbYear = !empty($tmdb['release_date']) ? substr($tmdb['release_date'], 0, 4) : '—';
-                                        $tmdbGenre = $tmdb['genre'] ?: '—';
                                         $tmdbType = $tmdb['type'] === 'movie' ? __('Movie') : __('TV Show');
+                                        $tmdbGenre = $tmdb['genre'] ?: $tmdbType;
                                     @endphp
                                     <a class="bella-search-item" href="{{ route($tmdb['type'] === 'movie' ? 'movie' : 'tv', 'tmdb-' . $tmdb['tmdb_id']) }}">
                                         <div class="bella-search-thumb">
@@ -103,9 +101,7 @@
                                             <div class="bella-search-meta">
                                                 <span>{{ $tmdbYear }}</span>
                                                 <span>{{ $tmdbGenre }}</span>
-                                                <span>{{ $tmdbType }}</span>
                                             </div>
-                                            <div class="bella-search-summary">{{ Str::limit($tmdb['overview'], 110) }}</div>
                                         </div>
                                     </a>
                                 @endforeach

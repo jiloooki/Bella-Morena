@@ -17,6 +17,8 @@ class PostFilter extends Component
 {
     use WithPagination;
     public $param;
+    public $routeName;
+    public $perPage = 24;
 
     public $genre = [];
     public $country = [];
@@ -34,6 +36,8 @@ class PostFilter extends Component
 
     public function mount(Request $request)
     {
+        $this->routeName = $request->route()->getName();
+        $this->perPage = $this->resolvePerPage($request);
 
         if($request->route('search')) {
             $this->search = $request->search;
@@ -66,10 +70,12 @@ class PostFilter extends Component
             $this->vote_average = $request->vote_average;
         }
 
-        if($request->route()->getName() == 'topimdb' AND !$request->filled('sort')) {
+        if($this->routeName == 'topimdb' AND !$request->filled('sort')) {
             $this->sort = 'vote_average';
-        } elseif($request->route()->getName() == 'trending' AND !$request->filled('sort')) {
+        } elseif($this->routeName == 'trending' AND !$request->filled('sort')) {
             $this->sort = 'like_count';
+        } elseif($this->isChronologicalBrowseRoute() AND !$request->filled('sort')) {
+            $this->sort = 'created_at';
         }
 
         if($request->filled('sort')) {
@@ -110,8 +116,10 @@ class PostFilter extends Component
         if ($this->quality) {
             $listings = $listings->where('quality',$this->quality);
         }
+        if ($this->isChronologicalBrowseRoute()) {
+            $listings = $listings->released();
+        }
         if($this->sort) {
-            $sort = config('attr.sortable')[$this->sort];
             if($this->sort == 'like_count') {
 
                 $listings = $listings->leftJoin('reactions', function ($join) {
@@ -122,7 +130,16 @@ class PostFilter extends Component
                     ->select('posts.*', DB::raw('COUNT(reactions.id) as like_count'))
                     ->groupBy('posts.id')
                     ->orderBy('like_count', 'desc');
+            } elseif ($this->shouldUseChronologicalNewestSort()) {
+                $listings = $listings
+                    ->orderBy('release_date', 'desc')
+                    ->orderBy('created_at', 'desc');
+            } elseif ($this->sort == 'release_date') {
+                $listings = $listings
+                    ->orderBy('release_date', 'desc')
+                    ->orderBy('created_at', 'desc');
             } else {
+                $sort = config('attr.sortable')[$this->sort];
                 $listings = $listings->orderBy($sort['type'],$sort['order']);
             }
         }else{
@@ -130,7 +147,7 @@ class PostFilter extends Component
         }
 
         $listings = $listings->where('status','publish');
-        $listings = $listings->simplePaginate(!config('settings.listing_limit') ? 24 : config('settings.listing_limit'));
+        $listings = $listings->simplePaginate($this->perPage);
 
         // TMDB API search results (only when searching and on first page)
         $tmdbResults = [];
@@ -226,5 +243,24 @@ class PostFilter extends Component
     {
         $this->sort = $sort;
         $this->filter();
+    }
+
+    protected function resolvePerPage(Request $request): int
+    {
+        if (in_array($request->route()->getName(), ['movies', 'tvshows'], true)) {
+            return 28;
+        }
+
+        return (int) (config('settings.listing_limit') ?: 24);
+    }
+
+    protected function isChronologicalBrowseRoute(): bool
+    {
+        return in_array($this->routeName, ['movies', 'tvshows'], true);
+    }
+
+    protected function shouldUseChronologicalNewestSort(): bool
+    {
+        return $this->isChronologicalBrowseRoute() && $this->sort === 'created_at';
     }
 }

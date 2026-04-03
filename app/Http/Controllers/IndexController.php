@@ -25,21 +25,27 @@ class IndexController extends Controller
 
 
         $modules = Module::where('status', 'active')->orderby('sortable', 'asc')->get();
+        $dailyCacheSuffix = now()->toDateString();
 
         $listings = [];
         foreach ($modules as $module) {
             $limit = $module->arguments->limit ?? 10;
             if($module->slug == 'slider') {
-                $listings['slider'] = Cache::rememberForever('home-slider', function () use ($limit) {
-                    return Post::where('slider', 'active')->where('status','publish')->orderBy('id', 'desc')->limit($limit)->get();
+                $listings['slider'] = Cache::remember('home-slider-'.$dailyCacheSuffix, now()->addHours(6), function () use ($limit) {
+                    return Post::where('slider', 'active')
+                        ->where('status','publish')
+                        ->released()
+                        ->orderBy('id', 'desc')
+                        ->limit($limit)
+                        ->get();
                 });
             } elseif($module->slug == 'movie') {
-                $listings['movie'] = Cache::rememberForever('home-movie-vote-count', function () {
-                    return $this->fetchPopularPostsByVoteCount('movie', 12);
+                $listings['movie'] = Cache::remember('home-movie-vote-count-'.$dailyCacheSuffix, now()->addHours(6), function () {
+                    return $this->fetchPopularPostsByVoteCount('movie', 14);
                 });
             } elseif($module->slug == 'tv') {
-                $listings['tv'] = Cache::rememberForever('home-tv-vote-count', function () {
-                    return $this->fetchPopularPostsByVoteCount('tv', 12);
+                $listings['tv'] = Cache::remember('home-tv-vote-count-'.$dailyCacheSuffix, now()->addHours(6), function () {
+                    return $this->fetchPopularPostsByVoteCount('tv', 14);
                 });
             } elseif($module->slug == 'episode') {
                 $listings['episode'] = Cache::rememberForever('home-episode-aired', function () use ($limit) {
@@ -51,8 +57,13 @@ class IndexController extends Controller
                         ->get();
                 });
             } elseif($module->slug == 'featured') {
-                $listings['featured'] = Cache::rememberForever('home-featured', function () use ($limit) {
-                    return Post::where('featured', 'active')->where('status','publish')->orderby('id','desc')->limit($limit ?? 16)->get();
+                $listings['featured'] = Cache::remember('home-featured-'.$dailyCacheSuffix, now()->addHours(6), function () use ($limit) {
+                    return Post::where('featured', 'active')
+                        ->where('status','publish')
+                        ->released()
+                        ->orderby('id','desc')
+                        ->limit($limit ?? 16)
+                        ->get();
                 });
             }elseif($module->slug == 'broadcast') {
                 $listings['broadcast'] = Cache::rememberForever('home-broadcast', function () use ($limit) {
@@ -74,7 +85,7 @@ class IndexController extends Controller
         }
 
         $listings['comingSoon'] = Cache::remember('home-coming-soon-'.now()->toDateString(), now()->addHours(6), function () {
-            return $this->fetchComingSoonPosts(12);
+            return $this->fetchComingSoonPosts(14);
         });
 
 
@@ -130,6 +141,7 @@ class IndexController extends Controller
 
             $posts = Post::where('type', $type)
                 ->where('status', 'publish')
+                ->released()
                 ->whereIn('tmdb_id', $orderedTmdbIds)
                 ->get()
                 ->keyBy(fn ($post) => (string) $post->tmdb_id);
@@ -158,6 +170,7 @@ class IndexController extends Controller
     {
         return Post::where('type', $type)
             ->where('status', 'publish')
+            ->released()
             ->orderByDesc('vote_average')
             ->orderByDesc('id')
             ->limit($limit)
@@ -166,11 +179,9 @@ class IndexController extends Controller
 
     protected function fetchComingSoonPosts(int $limit): SupportCollection
     {
-        $today = now()->startOfDay()->toDateString();
-
         $comingSoon = Post::whereIn('type', ['movie', 'tv'])
             ->where('status', 'publish')
-            ->whereDate('release_date', '>', $today)
+            ->comingSoon()
             ->orderBy('release_date')
             ->orderBy('id')
             ->limit(max($limit * 3, 24))
@@ -216,7 +227,7 @@ class IndexController extends Controller
 
                 $matchedPosts = Post::where('type', $type)
                     ->where('status', 'publish')
-                    ->whereDate('release_date', '>', $today)
+                    ->comingSoon()
                     ->whereIn('tmdb_id', $tmdbIds)
                     ->get();
 
