@@ -18,6 +18,7 @@ if (config('settings.language')) {
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+// Deployment smoke test trigger.
 if (config('settings.landing') == 'active') {
     Route::get('/', [\App\Http\Controllers\IndexController::class, 'landing'])->name('landing');
     Route::post('/', [\App\Http\Controllers\IndexController::class, 'search'])->name('landing');
