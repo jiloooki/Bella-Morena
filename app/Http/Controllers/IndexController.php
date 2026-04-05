@@ -96,7 +96,18 @@ class IndexController extends Controller
         // Seo
         $config['title'] = config('settings.title');
         $config['description'] = config('settings.description');
-        return view('home.landing', compact('config'));
+        $trendingTags = Cache::remember('landing-trending-tags-'.now()->toDateString(), now()->addHours(6), function () {
+            return Post::whereIn('type', ['movie', 'tv'])
+                ->where('status', 'publish')
+                ->released()
+                ->orderByDesc('popularity')
+                ->orderByDesc('vote_average')
+                ->orderByDesc('id')
+                ->limit(3)
+                ->get();
+        });
+
+        return view('home.landing', compact('config', 'trendingTags'));
     }
     public function search(Request $request) {
         return redirect()->route('search',$request->q);

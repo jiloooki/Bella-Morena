@@ -857,6 +857,21 @@ body.bella-embed-body ::selection {
     line-height: 1.55;
 }
 
+.bella-landing-body,
+.bella-landing-body p,
+.bella-landing-body li {
+    color: rgba(156, 163, 175, 0.92);
+    line-height: 1.75;
+}
+
+.bella-landing-body p + p {
+    margin-top: 1rem;
+}
+
+.bella-landing-body strong {
+    color: rgba(243, 244, 246, 0.94);
+}
+
 .bella-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
